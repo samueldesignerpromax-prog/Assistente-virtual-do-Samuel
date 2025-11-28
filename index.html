@@ -1,0 +1,557 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Samuel Designer ProMax - Chatbot</title>
+    <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .chatbot-container {
+            width: 100%;
+            max-width: 400px;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+
+        .chatbot-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .chatbot-header h1 {
+            font-size: 1.5em;
+            margin-bottom: 5px;
+        }
+
+        .chatbot-header p {
+            opacity: 0.9;
+            font-size: 0.9em;
+        }
+
+        .chatbot-messages {
+            height: 400px;
+            overflow-y: auto;
+            padding: 20px;
+            background: #f8f9fa;
+        }
+
+        .message {
+            margin-bottom: 15px;
+            display: flex;
+        }
+
+        .message.bot {
+            justify-content: flex-start;
+        }
+
+        .message.user {
+            justify-content: flex-end;
+        }
+
+        .message-content {
+            max-width: 80%;
+            padding: 12px 16px;
+            border-radius: 18px;
+            font-size: 0.95em;
+            line-height: 1.4;
+        }
+
+        .message.bot .message-content {
+            background: white;
+            border: 1px solid #e1e5e9;
+            border-bottom-left-radius: 5px;
+        }
+
+        .message.user .message-content {
+            background: #667eea;
+            color: white;
+            border-bottom-right-radius: 5px;
+        }
+
+        .chatbot-input {
+            padding: 20px;
+            background: white;
+            border-top: 1px solid #e1e5e9;
+        }
+
+        .input-group {
+            display: flex;
+            gap: 10px;
+        }
+
+        input, select, button {
+            padding: 12px 16px;
+            border: 1px solid #ddd;
+            border-radius: 10px;
+            font-size: 0.95em;
+        }
+
+        input, select {
+            flex: 1;
+            background: #f8f9fa;
+        }
+
+        button {
+            background: #667eea;
+            color: white;
+            border: none;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+        button:hover {
+            background: #5a6fd8;
+        }
+
+        .options-grid {
+            display: grid;
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .option-btn {
+            background: white;
+            border: 2px solid #667eea;
+            color: #667eea;
+            padding: 12px;
+            border-radius: 10px;
+            cursor: pointer;
+            text-align: left;
+            transition: all 0.3s;
+        }
+
+        .option-btn:hover {
+            background: #667eea;
+            color: white;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .package-info {
+            background: white;
+            padding: 15px;
+            border-radius: 10px;
+            margin: 10px 0;
+            border-left: 4px solid #667eea;
+        }
+
+        .package-info h3 {
+            color: #333;
+            margin-bottom: 10px;
+        }
+
+        .package-info ul {
+            list-style: none;
+            margin-bottom: 10px;
+        }
+
+        .package-info li {
+            padding: 5px 0;
+            border-bottom: 1px solid #f0f0f0;
+        }
+
+        .package-info li:last-child {
+            border-bottom: none;
+        }
+
+        .whatsapp-btn {
+            background: #25D366;
+            color: white;
+            padding: 12px 20px;
+            border-radius: 10px;
+            text-decoration: none;
+            display: inline-block;
+            text-align: center;
+            margin-top: 10px;
+            font-weight: bold;
+            width: 100%;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 500;
+            color: #333;
+        }
+
+        .loading {
+            text-align: center;
+            color: #667eea;
+            font-style: italic;
+        }
+
+        .success-message {
+            background: #d4edda;
+            color: #155724;
+            padding: 15px;
+            border-radius: 10px;
+            margin: 10px 0;
+            border-left: 4px solid #28a745;
+        }
+    </style>
+</head>
+<body>
+    <div class="chatbot-container">
+        <div class="chatbot-header">
+            <h1>Samuel Designer ProMax</h1>
+            <p>Chatbot de Atendimento</p>
+        </div>
+
+        <div class="chatbot-messages" id="chatbotMessages">
+            <div class="message bot">
+                <div class="message-content">
+                    Olá! Sou o assistente da Samuel Designer ProMax 🚀<br><br>
+                    Posso explicar nossos pacotes de sites e lojas virtuais!<br><br>
+                    <strong>Escolha uma opção:</strong>
+                </div>
+            </div>
+        </div>
+
+        <div class="chatbot-input">
+            <div id="initialOptions">
+                <div class="options-grid">
+                    <button class="option-btn" onclick="selectOption(1)">
+                        📄 Pacote Básico - R$ 350
+                    </button>
+                    <button class="option-btn" onclick="selectOption(2)">
+                        ⚡ Intermediário - R$ 650
+                    </button>
+                    <button class="option-btn" onclick="selectOption(3)">
+                        🌟 Avançado - R$ 1.200
+                    </button>
+                    <button class="option-btn" onclick="selectOption(4)">
+                        🛒 Loja Virtual - R$ 1.800
+                    </button>
+                    <button class="option-btn" onclick="selectOption(5)">
+                        💬 Falar com Samuel
+                    </button>
+                </div>
+            </div>
+
+            <div id="nameInput" class="hidden">
+                <div class="form-group">
+                    <label>👤 Qual seu nome completo?</label>
+                    <input type="text" id="userName" placeholder="Seu nome completo">
+                </div>
+                <button onclick="saveName()">Continuar</button>
+            </div>
+
+            <div id="phoneInput" class="hidden">
+                <div class="form-group">
+                    <label>📱 Qual seu WhatsApp com DDD?</label>
+                    <input type="tel" id="userPhone" placeholder="(11) 99999-9999">
+                </div>
+                <button onclick="savePhone()">Continuar</button>
+            </div>
+
+            <div id="businessInput" class="hidden">
+                <div class="form-group">
+                    <label>💼 Qual seu ramo de negócio?</label>
+                    <input type="text" id="userBusiness" placeholder="Ex: Restaurante, Loja, etc.">
+                </div>
+                <button onclick="saveBusiness()">Continuar</button>
+            </div>
+
+            <div id="colorsInput" class="hidden">
+                <div class="form-group">
+                    <label>🎨 Tem alguma preferência de cores ou estilo?</label>
+                    <input type="text" id="userColors" placeholder="Ex: Azul e branco, Moderno, etc.">
+                </div>
+                <button onclick="saveColors()">Continuar</button>
+            </div>
+
+            <div id="finalMessage" class="hidden">
+                <div class="success-message">
+                    <h3>🎉 Dados enviados com sucesso!</h3>
+                    <p>📧 <strong>Enviado para:</strong> samueldesignerpromax@gmail.com</p>
+                    <p>📞 <strong>Samuel vai te chamar no WhatsApp em até 5 minutos!</strong></p>
+                </div>
+                <a href="#" id="whatsappLink" class="whatsapp-btn" target="_blank">
+                    📱 Falar agora no WhatsApp
+                </a>
+                <button onclick="restartChat()" style="margin-top: 10px; width: 100%;">Iniciar novo atendimento</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Inicializar EmailJS
+        emailjs.init('L-FG9qXTpKftUl3kR');
+
+        let userData = {
+            name: '',
+            phone: '',
+            business: '',
+            colors: '',
+            selectedPackage: ''
+        };
+
+        const packages = {
+            1: {
+                name: 'Pacote Básico',
+                price: 'R$ 350',
+                description: 'Ideal para quem quer apenas marcar presença online.',
+                features: [
+                    '1 página (Landing Page ou apresentação simples)',
+                    'Layout responsivo (celular, tablet e PC)',
+                    'Formulário de contato ou link WhatsApp',
+                    'Entrega em até 5 dias úteis'
+                ]
+            },
+            2: {
+                name: 'Pacote Intermediário',
+                price: 'R$ 650',
+                description: 'Para quem precisa de mais estrutura e personalização.',
+                features: [
+                    'Até 5 páginas (Home, Sobre, Serviços, Contato etc.)',
+                    'Design profissional e personalizado',
+                    'Integração com redes sociais',
+                    'SEO básico (aparece no Google)',
+                    'Entrega em até 7 dias úteis'
+                ]
+            },
+            3: {
+                name: 'Pacote Avançado',
+                price: 'R$ 1.200',
+                description: 'Para empresas que querem se destacar.',
+                features: [
+                    'Até 10 páginas completas',
+                    'Blog ou área de novidades',
+                    'Painel administrativo simples',
+                    'Integração com Google Maps',
+                    'Suporte técnico por 30 dias'
+                ]
+            },
+            4: {
+                name: 'Pacote Loja Virtual',
+                price: 'R$ 1.800',
+                description: 'Pra quem quer vender direto pela internet.',
+                features: [
+                    'E-commerce completo (produtos ilimitados)',
+                    'Carrinho de compras e formas de pagamento',
+                    'Painel de controle e gerenciamento de pedidos',
+                    'Design 100% profissional e otimizado'
+                ]
+            },
+            5: {
+                name: 'Falar com Samuel',
+                price: '',
+                description: 'Conversa direta com o especialista.',
+                features: ['Atendimento personalizado']
+            }
+        };
+
+        function selectOption(option) {
+            userData.selectedPackage = packages[option];
+            
+            document.getElementById('initialOptions').classList.add('hidden');
+            showPackageInfo(option);
+            
+            setTimeout(() => {
+                document.getElementById('nameInput').classList.remove('hidden');
+            }, 1000);
+        }
+
+        function showPackageInfo(option) {
+            const package = packages[option];
+            let message = `<div class="package-info">
+                <h3>${package.name} ${package.price}</h3>
+                <p>${package.description}</p>
+                <ul>`;
+            
+            package.features.forEach(feature => {
+                message += `<li>✓ ${feature}</li>`;
+            });
+            
+            message += `</ul></div>`;
+            
+            addBotMessage(message);
+        }
+
+        function saveName() {
+            const name = document.getElementById('userName').value;
+            if (name.trim() === '') {
+                alert('Por favor, digite seu nome');
+                return;
+            }
+            
+            userData.name = name;
+            document.getElementById('nameInput').classList.add('hidden');
+            document.getElementById('phoneInput').classList.remove('hidden');
+            
+            addUserMessage(name);
+        }
+
+        function savePhone() {
+            const phone = document.getElementById('userPhone').value;
+            if (phone.trim() === '') {
+                alert('Por favor, digite seu WhatsApp');
+                return;
+            }
+            
+            userData.phone = phone;
+            document.getElementById('phoneInput').classList.add('hidden');
+            document.getElementById('businessInput').classList.remove('hidden');
+            
+            addUserMessage(phone);
+        }
+
+        function saveBusiness() {
+            const business = document.getElementById('userBusiness').value;
+            if (business.trim() === '') {
+                alert('Por favor, digite seu ramo de negócio');
+                return;
+            }
+            
+            userData.business = business;
+            document.getElementById('businessInput').classList.add('hidden');
+            document.getElementById('colorsInput').classList.remove('hidden');
+            
+            addUserMessage(business);
+        }
+
+        function saveColors() {
+            const colors = document.getElementById('userColors').value;
+            userData.colors = colors;
+            
+            document.getElementById('colorsInput').classList.add('hidden');
+            
+            addUserMessage(colors || 'Sem preferência específica');
+            
+            // Mostrar loading
+            addBotMessage('<div class="loading">⏳ Enviando seus dados para o Samuel...</div>');
+            
+            // Enviar dados e mostrar mensagem final
+            setTimeout(() => {
+                sendDataToEmailJS();
+            }, 2000);
+        }
+
+        function sendDataToEmailJS() {
+            // ENVIO REAL PARA EMAILJS
+            emailjs.send('service_ls0f8en', 'template_px6e4wp', {
+                name: userData.name,
+                phone: userData.phone,
+                business: userData.business,
+                plan: userData.selectedPackage.name + ' ' + userData.selectedPackage.price,
+                colors: userData.colors,
+                date: new Date().toLocaleString('pt-BR')
+            }, 'L-FG9qXTpKftUl3kR')
+            .then(function(response) {
+                console.log('Email enviado com sucesso!', response);
+                showFinalMessage();
+            }, function(error) {
+                console.log('Falha no envio do email:', error);
+                // Mesmo se o email falhar, mostra a mensagem final
+                showFinalMessage();
+            });
+        }
+
+        function showFinalMessage() {
+            document.getElementById('finalMessage').classList.remove('hidden');
+            
+            // Configurar link do WhatsApp com SEU NÚMERO REAL
+            const whatsappLink = document.getElementById('whatsappLink');
+            const message = `Olá Samuel! Me chamo ${userData.name} e tenho interesse no ${userData.selectedPackage.name} ${userData.selectedPackage.price}. Meu negócio: ${userData.business}${userData.colors ? '. Preferências: ' + userData.colors : ''}`;
+            
+            // SEU NÚMERO AQUI: (11) 91303-1275
+            whatsappLink.href = `https://wa.me/5511913031275?text=${encodeURIComponent(message)}`;
+            
+            // Atualizar mensagem do bot
+            const messagesContainer = document.getElementById('chatbotMessages');
+            const lastMessage = messagesContainer.lastChild;
+            if (lastMessage.querySelector('.loading')) {
+                lastMessage.querySelector('.message-content').innerHTML = '✅ Dados enviados com sucesso! O Samuel já recebeu suas informações.';
+            }
+            
+            addBotMessage(`🎉 <strong>Perfeito ${userData.name}!</strong><br><br>Seus dados foram enviados para o Samuel! Ele entrará em contato no WhatsApp em até 5 minutos.`);
+        }
+
+        function restartChat() {
+            userData = {
+                name: '',
+                phone: '',
+                business: '',
+                colors: '',
+                selectedPackage: ''
+            };
+            
+            document.getElementById('userName').value = '';
+            document.getElementById('userPhone').value = '';
+            document.getElementById('userBusiness').value = '';
+            document.getElementById('userColors').value = '';
+            
+            document.getElementById('initialOptions').classList.remove('hidden');
+            document.getElementById('finalMessage').classList.add('hidden');
+            
+            const messagesContainer = document.getElementById('chatbotMessages');
+            while (messagesContainer.children.length > 1) {
+                messagesContainer.removeChild(messagesContainer.lastChild);
+            }
+            
+            addBotMessage('Vamos recomeçar! Escolha uma opção:');
+        }
+
+        function addBotMessage(text) {
+            const messagesContainer = document.getElementById('chatbotMessages');
+            const messageDiv = document.createElement('div');
+            messageDiv.className = 'message bot';
+            messageDiv.innerHTML = `<div class="message-content">${text}</div>`;
+            messagesContainer.appendChild(messageDiv);
+            messagesContainer.scrollTop = messagesContainer.scrollHeight;
+        }
+
+        function addUserMessage(text) {
+            const messagesContainer = document.getElementById('chatbotMessages');
+            const messageDiv = document.createElement('div');
+            messageDiv.className = 'message user';
+            messageDiv.innerHTML = `<div class="message-content">${text}</div>`;
+            messagesContainer.appendChild(messageDiv);
+            messagesContainer.scrollTop = messagesContainer.scrollHeight;
+        }
+
+        // Event listeners para Enter
+        document.getElementById('userName').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') saveName();
+        });
+
+        document.getElementById('userPhone').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') savePhone();
+        });
+
+        document.getElementById('userBusiness').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') saveBusiness();
+        });
+
+        document.getElementById('userColors').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') saveColors();
+        });
+    </script>
+</body>
+</html>
