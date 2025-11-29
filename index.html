@@ -214,6 +214,33 @@
             margin: 10px 0;
             border-left: 4px solid #28a745;
         }
+        
+        .error-message {
+            background: #f8d7da;
+            color: #721c24;
+            padding: 10px;
+            border-radius: 10px;
+            margin: 10px 0;
+            border-left: 4px solid #dc3545;
+            font-size: 0.9em;
+        }
+        
+        .budget-calculator {
+            background: #e7f3ff;
+            padding: 15px;
+            border-radius: 10px;
+            margin: 10px 0;
+            border-left: 4px solid #007bff;
+        }
+        
+        .budget-result {
+            background: #fff3cd;
+            padding: 15px;
+            border-radius: 10px;
+            margin: 10px 0;
+            border-left: 4px solid #ffc107;
+            font-weight: bold;
+        }
     </style>
 </head>
 <body>
@@ -227,7 +254,7 @@
             <div class="message bot">
                 <div class="message-content">
                     Olá! Sou o assistente da Samuel Designer ProMax 🚀<br><br>
-                    Posso explicar nossos pacotes de sites e lojas virtuais!<br><br>
+                    Oferecemos <strong>portfólios profissionais, sites institucionais, lojas virtuais e muito mais!</strong><br><br>
                     <strong>Escolha uma opção:</strong>
                 </div>
             </div>
@@ -237,18 +264,21 @@
             <div id="initialOptions">
                 <div class="options-grid">
                     <button class="option-btn" onclick="selectOption(1)">
-                        📄 Pacote Básico - R$ 350
+                        📄 Portfólio Pessoal - R$ 350
                     </button>
                     <button class="option-btn" onclick="selectOption(2)">
-                        ⚡ Intermediário - R$ 650
+                        ⚡ Site Institucional - R$ 650
                     </button>
                     <button class="option-btn" onclick="selectOption(3)">
-                        🌟 Avançado - R$ 1.200
+                        🌟 Site Avançado - R$ 1.200
                     </button>
                     <button class="option-btn" onclick="selectOption(4)">
                         🛒 Loja Virtual - R$ 1.800
                     </button>
                     <button class="option-btn" onclick="selectOption(5)">
+                        💼 Orçamento Personalizado
+                    </button>
+                    <button class="option-btn" onclick="selectOption(6)">
                         💬 Falar com Samuel
                     </button>
                 </div>
@@ -260,6 +290,14 @@
                     <input type="text" id="userName" placeholder="Seu nome completo">
                 </div>
                 <button onclick="saveName()">Continuar</button>
+            </div>
+
+            <div id="emailInput" class="hidden">
+                <div class="form-group">
+                    <label>📧 Qual seu e-mail?</label>
+                    <input type="email" id="userEmail" placeholder="seu@email.com">
+                </div>
+                <button onclick="saveEmail()">Continuar</button>
             </div>
 
             <div id="phoneInput" class="hidden">
@@ -285,11 +323,48 @@
                 </div>
                 <button onclick="saveColors()">Continuar</button>
             </div>
+            
+            <div id="budgetCalculator" class="hidden">
+                <div class="budget-calculator">
+                    <h3>💰 Calculadora de Orçamento</h3>
+                    <div class="form-group">
+                        <label>Tipo de Projeto:</label>
+                        <select id="projectType">
+                            <option value="portfolio">Portfólio Pessoal</option>
+                            <option value="institutional">Site Institucional</option>
+                            <option value="ecommerce">Loja Virtual</option>
+                            <option value="landing">Landing Page</option>
+                            <option value="blog">Blog</option>
+                            <option value="other">Outro</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Quantidade de Páginas:</label>
+                        <select id="pageCount">
+                            <option value="1">1 página</option>
+                            <option value="3-5">3-5 páginas</option>
+                            <option value="6-10">6-10 páginas</option>
+                            <option value="10+">Mais de 10 páginas</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Prazo de Entrega:</label>
+                        <select id="deliveryTime">
+                            <option value="7">Até 7 dias</option>
+                            <option value="14">Até 14 dias</option>
+                            <option value="30">Até 30 dias</option>
+                            <option value="no-rush">Sem pressa</option>
+                        </select>
+                    </div>
+                    <button onclick="calculateBudget()">Calcular Orçamento</button>
+                </div>
+            </div>
 
             <div id="finalMessage" class="hidden">
                 <div class="success-message">
                     <h3>🎉 Dados enviados com sucesso!</h3>
                     <p>📧 <strong>Enviado para:</strong> samueldesignerpromax@gmail.com</p>
+                    <p>📧 <strong>Você receberá um e-mail de confirmação em instantes!</strong></p>
                     <p>📞 <strong>Samuel vai te chamar no WhatsApp em até 5 minutos!</strong></p>
                 </div>
                 <a href="#" id="whatsappLink" class="whatsapp-btn" target="_blank">
@@ -306,50 +381,55 @@
 
         let userData = {
             name: '',
+            email: '',
             phone: '',
             business: '',
             colors: '',
-            selectedPackage: ''
+            selectedPackage: '',
+            budget: null
         };
 
         const packages = {
             1: {
-                name: 'Pacote Básico',
+                name: 'Portfólio Pessoal',
                 price: 'R$ 350',
-                description: 'Ideal para quem quer apenas marcar presença online.',
+                description: 'Ideal para profissionais que querem mostrar seu trabalho.',
                 features: [
                     '1 página (Landing Page ou apresentação simples)',
                     'Layout responsivo (celular, tablet e PC)',
                     'Formulário de contato ou link WhatsApp',
                     'Entrega em até 5 dias úteis'
-                ]
+                ],
+                message: 'Perfeito para destacar seu trabalho! Seu portfólio ficará incrível e profissional.'
             },
             2: {
-                name: 'Pacote Intermediário',
+                name: 'Site Institucional',
                 price: 'R$ 650',
-                description: 'Para quem precisa de mais estrutura e personalização.',
+                description: 'Para empresas que precisam de mais estrutura e personalização.',
                 features: [
                     'Até 5 páginas (Home, Sobre, Serviços, Contato etc.)',
                     'Design profissional e personalizado',
                     'Integração com redes sociais',
                     'SEO básico (aparece no Google)',
                     'Entrega em até 7 dias úteis'
-                ]
+                ],
+                message: 'Excelente escolha! Seu site institucional transmitirá credibilidade e profissionalismo.'
             },
             3: {
-                name: 'Pacote Avançado',
+                name: 'Site Avançado',
                 price: 'R$ 1.200',
-                description: 'Para empresas que querem se destacar.',
+                description: 'Para empresas que querem se destacar com funcionalidades avançadas.',
                 features: [
                     'Até 10 páginas completas',
                     'Blog ou área de novidades',
                     'Painel administrativo simples',
                     'Integração com Google Maps',
                     'Suporte técnico por 30 dias'
-                ]
+                ],
+                message: 'Incrível! Com este site avançado, sua empresa terá todas as ferramentas para crescer online.'
             },
             4: {
-                name: 'Pacote Loja Virtual',
+                name: 'Loja Virtual',
                 price: 'R$ 1.800',
                 description: 'Pra quem quer vender direto pela internet.',
                 features: [
@@ -357,13 +437,22 @@
                     'Carrinho de compras e formas de pagamento',
                     'Painel de controle e gerenciamento de pedidos',
                     'Design 100% profissional e otimizado'
-                ]
+                ],
+                message: 'Fantástico! Sua loja virtual estará pronta para vender e conquistar clientes.'
             },
             5: {
+                name: 'Orçamento Personalizado',
+                price: 'A partir de R$ 250',
+                description: 'Projeto sob medida para suas necessidades específicas.',
+                features: ['Análise personalizada', 'Proposta detalhada', 'Cronograma flexível'],
+                message: 'Vamos criar um projeto único para você! Preencha os detalhes para um orçamento personalizado.'
+            },
+            6: {
                 name: 'Falar com Samuel',
                 price: '',
                 description: 'Conversa direta com o especialista.',
-                features: ['Atendimento personalizado']
+                features: ['Atendimento personalizado'],
+                message: 'Ótimo! O Samuel entrará em contato para entender suas necessidades e oferecer a melhor solução.'
             }
         };
 
@@ -373,9 +462,16 @@
             document.getElementById('initialOptions').classList.add('hidden');
             showPackageInfo(option);
             
-            setTimeout(() => {
-                document.getElementById('nameInput').classList.remove('hidden');
-            }, 1000);
+            // Se for orçamento personalizado, mostrar calculadora
+            if (option === 5) {
+                setTimeout(() => {
+                    document.getElementById('budgetCalculator').classList.remove('hidden');
+                }, 1000);
+            } else {
+                setTimeout(() => {
+                    document.getElementById('nameInput').classList.remove('hidden');
+                }, 1000);
+            }
         }
 
         function showPackageInfo(option) {
@@ -392,26 +488,45 @@
             message += `</ul></div>`;
             
             addBotMessage(message);
+            
+            // Adicionar mensagem personalizada baseada no plano
+            setTimeout(() => {
+                addBotMessage(package.message);
+            }, 500);
         }
 
         function saveName() {
             const name = document.getElementById('userName').value;
             if (name.trim() === '') {
-                alert('Por favor, digite seu nome');
+                showError('Por favor, digite seu nome');
                 return;
             }
             
             userData.name = name;
             document.getElementById('nameInput').classList.add('hidden');
-            document.getElementById('phoneInput').classList.remove('hidden');
+            document.getElementById('emailInput').classList.remove('hidden');
             
             addUserMessage(name);
+        }
+
+        function saveEmail() {
+            const email = document.getElementById('userEmail').value;
+            if (email.trim() === '' || !validateEmail(email)) {
+                showError('Por favor, digite um e-mail válido');
+                return;
+            }
+            
+            userData.email = email;
+            document.getElementById('emailInput').classList.add('hidden');
+            document.getElementById('phoneInput').classList.remove('hidden');
+            
+            addUserMessage(email);
         }
 
         function savePhone() {
             const phone = document.getElementById('userPhone').value;
             if (phone.trim() === '') {
-                alert('Por favor, digite seu WhatsApp');
+                showError('Por favor, digite seu WhatsApp');
                 return;
             }
             
@@ -425,7 +540,7 @@
         function saveBusiness() {
             const business = document.getElementById('userBusiness').value;
             if (business.trim() === '') {
-                alert('Por favor, digite seu ramo de negócio');
+                showError('Por favor, digite seu ramo de negócio');
                 return;
             }
             
@@ -452,23 +567,131 @@
                 sendDataToEmailJS();
             }, 2000);
         }
+        
+        function calculateBudget() {
+            const projectType = document.getElementById('projectType').value;
+            const pageCount = document.getElementById('pageCount').value;
+            const deliveryTime = document.getElementById('deliveryTime').value;
+            
+            // Cálculo básico do orçamento
+            let basePrice = 0;
+            
+            switch(projectType) {
+                case 'portfolio':
+                    basePrice = 350;
+                    break;
+                case 'institutional':
+                    basePrice = 650;
+                    break;
+                case 'ecommerce':
+                    basePrice = 1800;
+                    break;
+                case 'landing':
+                    basePrice = 400;
+                    break;
+                case 'blog':
+                    basePrice = 550;
+                    break;
+                case 'other':
+                    basePrice = 500;
+                    break;
+            }
+            
+            // Ajuste por número de páginas
+            if (pageCount === '3-5') basePrice += 200;
+            if (pageCount === '6-10') basePrice += 400;
+            if (pageCount === '10+') basePrice += 600;
+            
+            // Ajuste por prazo
+            if (deliveryTime === '7') basePrice += 100;
+            
+            userData.budget = basePrice;
+            
+            // Mostrar resultado
+            document.getElementById('budgetCalculator').classList.add('hidden');
+            addBotMessage(`<div class="budget-result">💰 Orçamento estimado: R$ ${basePrice}</div>`);
+            
+            setTimeout(() => {
+                document.getElementById('nameInput').classList.remove('hidden');
+            }, 1000);
+        }
 
         function sendDataToEmailJS() {
-            // ENVIO REAL PARA EMAILJS
-            emailjs.send('service_ls0f8en', 'template_px6e4wp', {
+            // ENVIO REAL PARA EMAILJS - PARA O CLIENTE
+            const clientTemplateParams = {
+                to_name: userData.name,
+                to_email: userData.email,
+                plan: userData.selectedPackage.name + ' ' + (userData.budget ? `(Orçamento: R$ ${userData.budget})` : userData.selectedPackage.price),
+                business: userData.business,
+                date: new Date().toLocaleString('pt-BR'),
+                message: `Olá ${userData.name}, recebemos seu interesse no ${userData.selectedPackage.name}. Em breve o Samuel entrará em contato para discutir os detalhes.`
+            };
+            
+            // ENVIO REAL PARA EMAILJS - PARA O SAMUEL
+            const samuelTemplateParams = {
+                to_name: 'Samuel',
+                to_email: 'samueldesignerpromax@gmail.com',
+                client_name: userData.name,
+                client_email: userData.email,
+                client_phone: userData.phone,
+                client_business: userData.business,
+                plan: userData.selectedPackage.name + ' ' + (userData.budget ? `(Orçamento: R$ ${userData.budget})` : userData.selectedPackage.price),
+                colors: userData.colors,
+                date: new Date().toLocaleString('pt-BR'),
+                message: `Novo lead: ${userData.name} interessado no ${userData.selectedPackage.name}. Contato: ${userData.phone} | ${userData.email}`
+            };
+            
+            // Enviar e-mail para o cliente
+            emailjs.send('service_ls0f8en', 'template_client_confirmation', clientTemplateParams, 'L-FG9qXTpKftUl3kR')
+            .then(function(response) {
+                console.log('E-mail para cliente enviado com sucesso!', response);
+            }, function(error) {
+                console.log('Falha no envio do e-mail para cliente:', error);
+            });
+            
+            // Enviar e-mail para o Samuel
+            emailjs.send('service_ls0f8en', 'template_px6e4wp', samuelTemplateParams, 'L-FG9qXTpKftUl3kR')
+            .then(function(response) {
+                console.log('E-mail para Samuel enviado com sucesso!', response);
+                // Enviar dados para Google Sheets via Webhook
+                sendToGoogleSheets();
+            }, function(error) {
+                console.log('Falha no envio do e-mail para Samuel:', error);
+                // Mesmo se o email falhar, mostra a mensagem final
+                showFinalMessage();
+            });
+        }
+        
+        function sendToGoogleSheets() {
+            // Webhook para Google Sheets (substitua pela sua URL)
+            const webhookURL = 'https://script.google.com/macros/s/SEU_SCRIPT_ID/exec';
+            
+            const sheetData = {
                 name: userData.name,
+                email: userData.email,
                 phone: userData.phone,
                 business: userData.business,
-                plan: userData.selectedPackage.name + ' ' + userData.selectedPackage.price,
+                plan: userData.selectedPackage.name,
+                budget: userData.budget || userData.selectedPackage.price,
                 colors: userData.colors,
-                date: new Date().toLocaleString('pt-BR')
-            }, 'L-FG9qXTpKftUl3kR')
-            .then(function(response) {
-                console.log('Email enviado com sucesso!', response);
+                date: new Date().toLocaleDateString('pt-BR'),
+                timestamp: new Date().toISOString()
+            };
+            
+            fetch(webhookURL, {
+                method: 'POST',
+                mode: 'no-cors',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(sheetData)
+            })
+            .then(() => {
+                console.log('Dados enviados para Google Sheets');
                 showFinalMessage();
-            }, function(error) {
-                console.log('Falha no envio do email:', error);
-                // Mesmo se o email falhar, mostra a mensagem final
+            })
+            .catch(error => {
+                console.log('Erro ao enviar para Google Sheets:', error);
                 showFinalMessage();
             });
         }
@@ -478,7 +701,7 @@
             
             // Configurar link do WhatsApp com SEU NÚMERO REAL
             const whatsappLink = document.getElementById('whatsappLink');
-            const message = `Olá Samuel! Me chamo ${userData.name} e tenho interesse no ${userData.selectedPackage.name} ${userData.selectedPackage.price}. Meu negócio: ${userData.business}${userData.colors ? '. Preferências: ' + userData.colors : ''}`;
+            const message = `Olá Samuel! Me chamo ${userData.name} e tenho interesse no ${userData.selectedPackage.name} ${userData.budget ? `(Orçamento: R$ ${userData.budget})` : userData.selectedPackage.price}. Meu negócio: ${userData.business}${userData.colors ? '. Preferências: ' + userData.colors : ''}`;
             
             // SEU NÚMERO AQUI: (11) 91303-1275
             whatsappLink.href = `https://wa.me/5511913031275?text=${encodeURIComponent(message)}`;
@@ -490,25 +713,32 @@
                 lastMessage.querySelector('.message-content').innerHTML = '✅ Dados enviados com sucesso! O Samuel já recebeu suas informações.';
             }
             
-            addBotMessage(`🎉 <strong>Perfeito ${userData.name}!</strong><br><br>Seus dados foram enviados para o Samuel! Ele entrará em contato no WhatsApp em até 5 minutos.`);
+            addBotMessage(`🎉 <strong>Perfeito ${userData.name}!</strong><br><br>Seus dados foram enviados para o Samuel! Ele entrará em contato no WhatsApp em até 5 minutos.<br><br>📧 <strong>Você também receberá um e-mail de confirmação em instantes!</strong>`);
         }
 
         function restartChat() {
             userData = {
                 name: '',
+                email: '',
                 phone: '',
                 business: '',
                 colors: '',
-                selectedPackage: ''
+                selectedPackage: '',
+                budget: null
             };
             
             document.getElementById('userName').value = '';
+            document.getElementById('userEmail').value = '';
             document.getElementById('userPhone').value = '';
             document.getElementById('userBusiness').value = '';
             document.getElementById('userColors').value = '';
+            document.getElementById('projectType').value = 'portfolio';
+            document.getElementById('pageCount').value = '1';
+            document.getElementById('deliveryTime').value = '7';
             
             document.getElementById('initialOptions').classList.remove('hidden');
             document.getElementById('finalMessage').classList.add('hidden');
+            document.getElementById('budgetCalculator').classList.add('hidden');
             
             const messagesContainer = document.getElementById('chatbotMessages');
             while (messagesContainer.children.length > 1) {
@@ -535,10 +765,28 @@
             messagesContainer.appendChild(messageDiv);
             messagesContainer.scrollTop = messagesContainer.scrollHeight;
         }
+        
+        function showError(message) {
+            const messagesContainer = document.getElementById('chatbotMessages');
+            const errorDiv = document.createElement('div');
+            errorDiv.className = 'message bot';
+            errorDiv.innerHTML = `<div class="message-content error-message">${message}</div>`;
+            messagesContainer.appendChild(errorDiv);
+            messagesContainer.scrollTop = messagesContainer.scrollHeight;
+        }
+        
+        function validateEmail(email) {
+            const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            return re.test(email);
+        }
 
         // Event listeners para Enter
         document.getElementById('userName').addEventListener('keypress', function(e) {
             if (e.key === 'Enter') saveName();
+        });
+
+        document.getElementById('userEmail').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') saveEmail();
         });
 
         document.getElementById('userPhone').addEventListener('keypress', function(e) {
