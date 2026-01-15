@@ -464,10 +464,42 @@
         .notification.show {
             transform: translateX(0);
         }
+
+        .loading-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(15, 23, 42, 0.9);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 2000;
+            display: none;
+        }
+
+        .loading-spinner {
+            width: 50px;
+            height: 50px;
+            border: 3px solid rgba(0, 219, 222, 0.3);
+            border-radius: 50%;
+            border-top-color: #00dbde;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
     </style>
 </head>
 <body>
     <div class="tech-background"></div>
+    
+    <!-- Loading Overlay -->
+    <div class="loading-overlay" id="loadingOverlay">
+        <div class="loading-spinner"></div>
+    </div>
     
     <!-- Notification -->
     <div class="notification" id="notification">
@@ -549,23 +581,23 @@
                 </div>
                 
                 <div class="form-group">
-                    <label for="emailName">👤 Nome Completo</label>
-                    <input type="text" id="emailName" placeholder="Seu nome">
+                    <label for="emailName">👤 Nome Completo *</label>
+                    <input type="text" id="emailName" placeholder="Seu nome" required>
                 </div>
                 
                 <div class="form-group">
-                    <label for="emailEmail">📧 E-mail</label>
-                    <input type="email" id="emailEmail" placeholder="seu@email.com">
+                    <label for="emailEmail">📧 E-mail *</label>
+                    <input type="email" id="emailEmail" placeholder="seu@email.com" required>
                 </div>
                 
                 <div class="form-group">
-                    <label for="emailPhone">📱 WhatsApp</label>
-                    <input type="tel" id="emailPhone" placeholder="(11) 99999-9999">
+                    <label for="emailPhone">📱 WhatsApp *</label>
+                    <input type="tel" id="emailPhone" placeholder="(11) 99999-9999" required>
                 </div>
                 
                 <div class="form-group">
-                    <label>🏢 Tipo de Negócio</label>
-                    <select id="emailBusiness">
+                    <label for="emailBusiness">🏢 Tipo de Negócio *</label>
+                    <select id="emailBusiness" required>
                         <option value="">Selecione</option>
                         <option value="pizzaria">Pizzaria/Lanchonete</option>
                         <option value="pet">Pet Shop</option>
@@ -578,7 +610,7 @@
                 </div>
                 
                 <div class="form-group">
-                    <label>💼 Serviço de Interesse</label>
+                    <label>💼 Serviço de Interesse *</label>
                     <div class="service-options">
                         <div class="service-option" onclick="selectService(this, 'Site Institucional')">
                             <i class="fas fa-globe"></i>
@@ -598,6 +630,7 @@
                         </div>
                     </div>
                     <input type="hidden" id="selectedService" value="">
+                    <small style="color: #dc3545; display: none;" id="serviceError">Selecione um serviço</small>
                 </div>
                 
                 <div class="form-group">
@@ -605,7 +638,7 @@
                     <textarea id="emailMessage" rows="3" placeholder="Descreva sua necessidade..."></textarea>
                 </div>
                 
-                <button onclick="sendEmail()" style="width: 100%; background: var(--ai-gradient);">
+                <button onclick="sendEmail(event)" style="width: 100%; background: var(--ai-gradient);">
                     <i class="fas fa-paper-plane"></i> Enviar E-mail
                 </button>
                 
@@ -620,7 +653,7 @@
                 <h4 style="margin-bottom: 8px;">✅ E-mail Enviado!</h4>
                 <p style="font-size: 0.9em;">Seu e-mail foi enviado para <strong>samueldesinerpromax@gmail.com</strong></p>
                 <p style="font-size: 0.9em;">Você receberá uma resposta em até 2 horas úteis.</p>
-                <button onclick="resetChat()" style="width: 100%; margin-top: 15px; background: var(--text-secondary);">
+                <button onclick="resetChat()" style="width: 100%; margin-top: 15px; background: var(--ai-gradient);">
                     <i class="fas fa-redo"></i> Voltar ao Início
                 </button>
             </div>
@@ -629,18 +662,23 @@
 
     <script>
         // ==============================================
-        // 🔧 CONFIGURAÇÃO DO EMAILJS (SUAS CREDENCIAIS)
+        // 🔧 CONFIGURAÇÃO DO EMAILJS ATUALIZADA
         // ==============================================
         const EMAILJS_CONFIG = {
-            PUBLIC_KEY: "m0r3TYxQw-GioGetsfyp-",
+            PUBLIC_KEY: "nrvxa22xM2RBvnyBZ", // SUA CHAVE PÚBLICA
+            PRIVATE_KEY: "m0r3TYxQw-GioGetsfyp-", // SUA CHAVE PRIVADA
             SERVICE_ID: "service_ls0f8en",
             TEMPLATE_ID_CLIENT: "template_f1l0wee",
+            TEMPLATE_ID_ADMIN: "template_6qhcp4p",
             COMPANY_EMAIL: "samueldesinerpromax@gmail.com",
             COMPANY_NAME: "Samuel Tech IA"
         };
 
         // Inicializar EmailJS
-        emailjs.init(EMAILJS_CONFIG.PUBLIC_KEY);
+        (function() {
+            emailjs.init(EMAILJS_CONFIG.PUBLIC_KEY);
+            console.log("📧 EmailJS inicializado com chave:", EMAILJS_CONFIG.PUBLIC_KEY);
+        })();
 
         let userData = {
             userName: '',
@@ -653,7 +691,6 @@
 
         // Base de conhecimento inteligente
         const knowledgeBase = {
-            // 👋 SAUDAÇÕES
             saudacoes: {
                 responses: [
                     "Oi 😊 Seja bem-vindo à Samuel Tech IA! Como posso te ajudar hoje?",
@@ -663,7 +700,6 @@
                 triggers: ["oi", "olá", "ola", "oii", "oiii", "opa", "eae", "e aí", "salve", "hello", "hey"]
             },
             
-            // 😊 CONVERSA INFORMAL
             tudoBem: {
                 responses: [
                     "Tudo ótimo 😄 Obrigado por perguntar! Em que posso ajudar?",
@@ -673,7 +709,6 @@
                 triggers: ["tudo bem", "td bem", "blz", "beleza", "suave", "de boa", "como vai", "tudo bom"]
             },
             
-            // 🤖 IDENTIDADE / IA
             quemSou: {
                 responses: [
                     "Sou um assistente virtual com inteligência artificial 🤖, mas posso chamar um humano quando quiser.",
@@ -683,7 +718,6 @@
                 triggers: ["vc é humano", "é robô", "é ia", "inteligência artificial", "quem é vc"]
             },
             
-            // 🧠 SERVIÇOS
             servicos: {
                 responses: [
                     "Criamos sites profissionais, chatbots com IA, automações, integrações com WhatsApp e soluções digitais sob medida.",
@@ -693,7 +727,6 @@
                 triggers: ["oq vcs fazem", "serviços", "trabalham com", "fazem o que", "que serviços"]
             },
             
-            // 💻 SITE
             site: {
                 responses: [
                     "Temos opções acessíveis 😊 Posso entender sua necessidade e te indicar a melhor solução.",
@@ -703,7 +736,6 @@
                 triggers: ["faz site", "site barato", "aparece no google", "dá pra editar", "site profissional"]
             },
             
-            // 🤖 CHATBOT
             chatbot: {
                 responses: [
                     "Sim 🤖 Ele atende 24h automaticamente e reduz muito o trabalho humano.",
@@ -713,7 +745,6 @@
                 triggers: ["chatbot", "bot responde", "entende erro", "funciona whatsapp", "24 horas"]
             },
             
-            // 💰 PREÇO
             preco: {
                 responses: [
                     "Temos soluções para diferentes orçamentos 😊 Posso te explicar as opções.",
@@ -723,7 +754,6 @@
                 triggers: ["preço", "é caro", "tem desconto", "quanto custa", "valor", "orçamento"]
             },
             
-            // ⏱️ PRAZO
             prazo: {
                 responses: [
                     "Entendo 🚀 Podemos verificar uma entrega rápida para você.",
@@ -733,7 +763,6 @@
                 triggers: ["preciso rápido", "faz hoje", "urgente", "prazo", "tempo", "quando fica"]
             },
             
-            // 🔐 CONFIANÇA
             confianca: {
                 responses: [
                     "Sim 😊 Já desenvolvemos projetos para diversos clientes. Posso mostrar exemplos.",
@@ -743,7 +772,6 @@
                 triggers: ["já fizeram", "tem prova", "contrato", "confiável", "funciona mesmo"]
             },
             
-            // 📞 HUMANO
             humano: {
                 responses: [
                     "Sem problemas 😊 Vou te encaminhar para um atendente humano agora.",
@@ -753,7 +781,6 @@
                 triggers: ["humano", "atendente", "alguém de verdade", "vc não resolve", "pessoa"]
             },
             
-            // ❓ DÚVIDAS
             duvidas: {
                 responses: [
                     "😅 Não entendi muito bem. Pode reformular ou digitar 'menu'?",
@@ -763,7 +790,6 @@
                 triggers: ["???", "nada", "sei lá", "que", "como assim", "não entendi", "hm"]
             },
             
-            // 🙏 AGRADECIMENTO
             agradecimento: {
                 responses: [
                     "Ah, que isso! 😊 Fico feliz em poder ajudar!",
@@ -773,7 +799,6 @@
                 triggers: ["obrigado", "obrigada", "valeu", "brigado", "agradeço", "obg"]
             },
             
-            // 👋 DESPEDIDA
             despedida: {
                 responses: [
                     "Até mais! 👋 Qualquer dúvida estou aqui!",
@@ -784,7 +809,10 @@
             }
         };
 
-        // Função para salvar nome do usuário
+        // ==============================================
+        // FUNÇÕES PRINCIPAIS
+        // ==============================================
+
         function saveUserName() {
             const nameInput = document.getElementById('userNameInput');
             const userName = nameInput.value.trim();
@@ -806,7 +834,6 @@
             }, 300);
         }
 
-        // Função para enviar mensagem
         function sendMessage() {
             const input = document.getElementById('chatInput');
             const message = input.value.trim();
@@ -824,7 +851,6 @@
                 const response = getBotResponse(message);
                 addBotMessage(response);
                 
-                // Se pedir humano, mostrar WhatsApp
                 if (message.toLowerCase().includes('humano') || 
                     message.toLowerCase().includes('atendente') || 
                     message.toLowerCase().includes('pessoa')) {
@@ -833,7 +859,6 @@
                     }, 1000);
                 }
                 
-                // Se pedir menu
                 if (message.toLowerCase().includes('menu') || 
                     message.toLowerCase().includes('ajuda') || 
                     message.toLowerCase().includes('opções')) {
@@ -844,18 +869,15 @@
             }, 1200);
         }
 
-        // Obter resposta do bot
         function getBotResponse(message) {
             const lowerMsg = message.toLowerCase();
             
-            // Verificar cada categoria
             for (const category in knowledgeBase) {
                 const triggers = knowledgeBase[category].triggers;
                 if (triggers.some(trigger => lowerMsg.includes(trigger))) {
                     const responses = knowledgeBase[category].responses;
                     let response = responses[Math.floor(Math.random() * responses.length)];
                     
-                    // Personalizar com nome se tiver
                     if (userData.userName && category !== 'saudacoes' && category !== 'tudoBem') {
                         response = userData.userName + ", " + response.charAt(0).toLowerCase() + response.slice(1);
                     }
@@ -864,7 +886,6 @@
                 }
             }
             
-            // Resposta padrão
             const defaultResponses = [
                 "🤔 Interessante! Posso te ajudar com informações sobre nossos serviços. Digite 'menu' para ver opções.",
                 "😊 Entendi! Em que posso ser útil? Posso falar sobre sites, chatbots ou automações.",
@@ -880,7 +901,6 @@
             return response;
         }
 
-        // Mostrar menu
         function showMenu() {
             addBotMessage(`Claro 😊 Escolha uma opção:<br><br>
                 <div class="menu-options">
@@ -911,7 +931,6 @@
                 </div>`);
         }
 
-        // Lidar com seleção do menu
         function handleMenuSelection(option) {
             const responses = {
                 'site': "🎯 Perfeito! Vamos criar um site incrível para seu negócio. Posso te explicar como funciona?",
@@ -937,7 +956,6 @@
             }
         }
 
-        // Mostrar opção do WhatsApp
         function showWhatsAppOption() {
             addBotMessage(`👤 <strong>Para falar com atendente humano:</strong><br><br>
                 <a href="https://wa.me/5511913031275?text=Olá Samuel Tech IA! Gostaria de falar com um atendente." 
@@ -948,13 +966,11 @@
                 <small>Horário: Segunda a Sexta, 9h às 18h</small>`);
         }
 
-        // Mostrar formulário de email
         function showEmailForm() {
             document.getElementById('normalChat').classList.add('hidden');
             document.getElementById('emailFormContainer').classList.remove('hidden');
             document.getElementById('emailSuccess').classList.add('hidden');
             
-            // Preencher nome se já tiver
             if (userData.userName) {
                 document.getElementById('emailName').value = userData.userName;
             }
@@ -964,7 +980,6 @@
             }, 300);
         }
 
-        // Esconder formulário de email
         function hideEmailForm() {
             document.getElementById('emailFormContainer').classList.add('hidden');
             document.getElementById('normalChat').classList.remove('hidden');
@@ -975,7 +990,6 @@
             }, 300);
         }
 
-        // Selecionar serviço
         function selectService(element, service) {
             document.querySelectorAll('.service-option').forEach(opt => {
                 opt.classList.remove('selected');
@@ -983,10 +997,15 @@
             
             element.classList.add('selected');
             document.getElementById('selectedService').value = service;
+            document.getElementById('serviceError').style.display = 'none';
         }
 
-        // 🔧 ENVIAR EMAIL (FUNCIONAL)
-        async function sendEmail() {
+        // ==============================================
+        // 🔧 FUNÇÃO PRINCIPAL DE ENVIO DE EMAIL
+        // ==============================================
+        async function sendEmail(event) {
+            event.preventDefault();
+
             // Coletar dados
             const name = document.getElementById('emailName').value.trim();
             const email = document.getElementById('emailEmail').value.trim();
@@ -996,22 +1015,35 @@
             const message = document.getElementById('emailMessage').value.trim();
             
             // Validação
-            if (!name || !email || !phone || !business || !service) {
-                showNotification("Por favor, preencha todos os campos obrigatórios!");
-                return;
+            let isValid = true;
+            
+            if (!name) {
+                showNotification("Por favor, digite seu nome!");
+                isValid = false;
             }
             
-            if (!validateEmail(email)) {
+            if (!email || !validateEmail(email)) {
                 showNotification("Por favor, insira um e-mail válido!");
-                return;
+                isValid = false;
             }
             
-            // Atualizar userData
-            userData.name = name;
-            userData.email = email;
-            userData.phone = phone;
-            userData.businessType = business;
-            userData.selectedService = service;
+            if (!phone) {
+                showNotification("Por favor, digite seu WhatsApp!");
+                isValid = false;
+            }
+            
+            if (!business) {
+                showNotification("Por favor, selecione o tipo de negócio!");
+                isValid = false;
+            }
+            
+            if (!service) {
+                document.getElementById('serviceError').style.display = 'block';
+                showNotification("Por favor, selecione um serviço!");
+                isValid = false;
+            }
+            
+            if (!isValid) return;
             
             // Mostrar loading
             const button = event.target;
@@ -1019,86 +1051,151 @@
             button.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Enviando...';
             button.disabled = true;
             
+            // Data atual formatada
+            const now = new Date();
+            const dateFormatted = now.toLocaleDateString('pt-BR');
+            const timeFormatted = now.toLocaleTimeString('pt-BR');
+            
+            // Mapear tipo de negócio
+            const businessTypes = {
+                'pizzaria': 'Pizzaria/Lanchonete',
+                'pet': 'Pet Shop',
+                'salon': 'Salão/Barberia',
+                'clinic': 'Clínica/Consultório',
+                'store': 'Loja/E-commerce',
+                'digital': 'Serviços Digitais',
+                'other': 'Outro'
+            };
+            
+            const businessName = businessTypes[business] || business;
+            
+            // Preparar parâmetros para o CLIENTE
+            const clientEmailParams = {
+                to_name: name,
+                to_email: email,
+                from_name: EMAILJS_CONFIG.COMPANY_NAME,
+                service_name: service,
+                business_type: business,
+                client_message: message || "Sem mensagem adicional",
+                date: dateFormatted,
+                phone: phone,
+                company_email: EMAILJS_CONFIG.COMPANY_EMAIL,
+                reply_to: EMAILJS_CONFIG.COMPANY_EMAIL
+            };
+            
+            // Preparar parâmetros para SAMUEL (admin)
+            const adminEmailParams = {
+                to_name: "Samuel Tech IA",
+                to_email: EMAILJS_CONFIG.COMPANY_EMAIL,
+                client_name: name,
+                client_email: email,
+                client_phone: phone,
+                client_business: businessName,
+                client_service: service,
+                client_message: message || "Sem mensagem adicional",
+                date: dateFormatted,
+                time: timeFormatted,
+                subject: `🚀 NOVA SOLICITAÇÃO: ${name} - ${service}`,
+                company_name: EMAILJS_CONFIG.COMPANY_NAME,
+                priority: "Alta"
+            };
+            
             try {
-                // 1. E-mail para o CLIENTE
-                const clientEmailParams = {
-                    to_name: name,
-                    to_email: email,
-                    from_name: EMAILJS_CONFIG.COMPANY_NAME,
-                    service_name: service,
-                    business_type: business,
-                    client_message: message || "Sem mensagem adicional",
-                    date: new Date().toLocaleDateString('pt-BR'),
-                    phone: phone,
-                    company_email: EMAILJS_CONFIG.COMPANY_EMAIL
-                };
+                console.log("📧 Iniciando envio de e-mails...");
                 
-                console.log("📧 Enviando e-mail para cliente...");
-                
-                const clientResponse = await emailjs.send(
+                // 1. Enviar e-mail para o CLIENTE (confirmação)
+                console.log("Enviando para cliente...");
+                await emailjs.send(
                     EMAILJS_CONFIG.SERVICE_ID,
                     EMAILJS_CONFIG.TEMPLATE_ID_CLIENT,
                     clientEmailParams
                 );
+                console.log("✅ E-mail para cliente enviado!");
                 
-                console.log("✅ E-mail para cliente enviado:", clientResponse.status);
+                // 2. Enviar notificação para SAMUEL
+                console.log("Enviando para Samuel...");
+                await emailjs.send(
+                    EMAILJS_CONFIG.SERVICE_ID,
+                    EMAILJS_CONFIG.TEMPLATE_ID_ADMIN,
+                    adminEmailParams
+                );
+                console.log("✅ Notificação para Samuel enviada!");
                 
-                // 2. E-mail para SAMUEL (notificação)
-                const samuelEmailParams = {
-                    to_name: "Samuel Tech IA",
-                    to_email: EMAILJS_CONFIG.COMPANY_EMAIL,
-                    client_name: name,
-                    client_email: email,
-                    client_phone: phone,
-                    client_business: business,
-                    client_service: service,
-                    client_message: message || "Sem mensagem adicional",
-                    date: new Date().toLocaleString('pt-BR'),
-                    subject: `Nova Solicitação: ${name} - ${service}`
-                };
-                
-                // Para enviar para Samuel, você precisa criar outro template no EmailJS
-                // Por enquanto, vamos apenas logar
-                console.log("📧 Dados para Samuel:", samuelEmailParams);
-                
-                // Mostrar sucesso
+                // Mostrar mensagem de sucesso
                 document.getElementById('emailFormContainer').classList.add('hidden');
                 document.getElementById('emailSuccess').classList.remove('hidden');
+                showNotification("✅ E-mails enviados com sucesso!");
                 
-                showNotification("✅ E-mail enviado com sucesso!");
-                
-                // Resetar botão
-                button.innerHTML = originalText;
-                button.disabled = false;
-                
-                // Log completo
-                console.log("🎉 EMAIL ENVIADO COM SUCESSO!");
-                console.log("De:", email);
-                console.log("Para:", EMAILJS_CONFIG.COMPANY_EMAIL);
-                console.log("Serviço:", service);
+                // Log de sucesso
+                console.log("🎉 TODOS OS E-MAILS ENVIADOS COM SUCESSO!");
+                console.log("========================================");
+                console.log("📋 RESUMO DA SOLICITAÇÃO:");
+                console.log("👤 Cliente:", name);
+                console.log("📧 E-mail:", email);
+                console.log("📱 WhatsApp:", phone);
+                console.log("🏢 Negócio:", businessName);
+                console.log("💼 Serviço:", service);
+                console.log("📝 Mensagem:", message || "Nenhuma");
+                console.log("⏰ Data/Hora:", `${dateFormatted} ${timeFormatted}`);
+                console.log("========================================");
                 
             } catch (error) {
-                console.error("❌ Erro ao enviar e-mail:", error);
+                console.error("❌ ERRO AO ENVIAR E-MAIL:", error);
+                showNotification("❌ Erro ao enviar e-mail. Tente novamente.");
                 
-                // Fallback: abrir cliente de e-mail
-                const subject = `Solicitação: ${service} - ${name}`;
-                const body = `Nome: ${name}\nE-mail: ${email}\nWhatsApp: ${phone}\nNegócio: ${business}\nServiço: ${service}\nMensagem: ${message || "Sem mensagem"}\n\nEnviado via chatbot Samuel Tech IA`;
+                // FALLBACK: Abrir cliente de e-mail padrão
+                const subject = `🚀 SOLICITAÇÃO: ${service} - ${name}`;
+                const body = `NOVA SOLICITAÇÃO VIA CHATBOT
+======================================
+👤 NOME: ${name}
+📧 E-MAIL: ${email}
+📱 WHATSAPP: ${phone}
+🏢 TIPO DE NEGÓCIO: ${businessName}
+💼 SERVIÇO DE INTERESSE: ${service}
+📝 MENSAGEM: ${message || "Sem mensagem adicional"}
+⏰ DATA/HORA: ${dateFormatted} ${timeFormatted}
+======================================
+Enviado via Chatbot Samuel Tech IA
+
+Responda este e-mail ou entre em contato:
+📧 ${EMAILJS_CONFIG.COMPANY_EMAIL}
+🤖 Chatbot Samuel Tech IA`;
+
+                const mailtoLink = `mailto:${EMAILJS_CONFIG.COMPANY_EMAIL}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}&cc=${email}`;
                 
-                window.location.href = `mailto:${EMAILJS_CONFIG.COMPANY_EMAIL}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}&cc=${encodeURIComponent(email)}`;
+                // Abrir cliente de e-mail em nova aba
+                window.open(mailtoLink, '_blank');
                 
-                // Mostrar sucesso mesmo assim
-                document.getElementById('emailFormContainer').classList.add('hidden');
-                document.getElementById('emailSuccess').classList.remove('hidden');
+                // Mostrar mensagem alternativa
+                setTimeout(() => {
+                    document.getElementById('emailFormContainer').classList.add('hidden');
+                    document.getElementById('emailSuccess').classList.remove('hidden');
+                    
+                    const successDiv = document.getElementById('emailSuccess');
+                    successDiv.innerHTML = `
+                        <i class="fas fa-info-circle" style="font-size: 1.5em; margin-bottom: 10px; color: #17a2b8;"></i>
+                        <h4 style="margin-bottom: 8px;">📧 Cliente de E-mail Aberto</h4>
+                        <p style="font-size: 0.9em;">Seu cliente de e-mail foi aberto automaticamente!</p>
+                        <p style="font-size: 0.9em;">Basta clicar em <strong>"Enviar"</strong> para finalizar.</p>
+                        <div style="background: #f8f9fa; padding: 10px; border-radius: 8px; margin: 15px 0; font-size: 0.85em;">
+                            <strong>Para:</strong> ${EMAILJS_CONFIG.COMPANY_EMAIL}<br>
+                            <strong>Assunto:</strong> ${subject.substring(0, 50)}...
+                        </div>
+                        <button onclick="resetChat()" style="width: 100%; margin-top: 10px; background: var(--ai-gradient);">
+                            <i class="fas fa-redo"></i> Voltar ao Chat
+                        </button>
+                    `;
+                    
+                    showNotification("📧 Complete o envio no seu cliente de e-mail.");
+                }, 500);
                 
-                showNotification("📧 Cliente de e-mail aberto! Basta clicar em Enviar.");
-                
-                // Resetar botão
+            } finally {
+                // Restaurar botão
                 button.innerHTML = originalText;
                 button.disabled = false;
             }
         }
 
-        // Resetar chat
         function resetChat() {
             document.getElementById('emailSuccess').classList.add('hidden');
             document.getElementById('normalChat').classList.remove('hidden');
@@ -1110,6 +1207,7 @@
             document.getElementById('emailBusiness').value = '';
             document.getElementById('emailMessage').value = '';
             document.getElementById('selectedService').value = '';
+            document.getElementById('serviceError').style.display = 'none';
             
             document.querySelectorAll('.service-option').forEach(opt => {
                 opt.classList.remove('selected');
@@ -1122,7 +1220,10 @@
             }, 300);
         }
 
-        // Funções auxiliares
+        // ==============================================
+        // FUNÇÕES AUXILIARES
+        // ==============================================
+
         function validateEmail(email) {
             const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
             return re.test(email);
@@ -1132,12 +1233,17 @@
             const notification = document.getElementById('notification');
             const notificationText = document.getElementById('notificationText');
             
-            notificationText.textContent = text;
+            notificationText.innerHTML = `<strong>${text}</strong>`;
             notification.classList.add('show');
             
             setTimeout(() => {
                 notification.classList.remove('show');
-            }, 3000);
+            }, 4000);
+        }
+
+        function showLoading(show) {
+            const loadingOverlay = document.getElementById('loadingOverlay');
+            loadingOverlay.style.display = show ? 'flex' : 'none';
         }
 
         function showTypingIndicator() {
@@ -1205,16 +1311,18 @@
             sendMessage();
         }
 
-        // Configuração inicial
+        // ==============================================
+        // INICIALIZAÇÃO
+        // ==============================================
         document.addEventListener('DOMContentLoaded', function() {
             console.log("🚀 Samuel Tech IA Chatbot carregado!");
-            console.log("Configuração EmailJS:", EMAILJS_CONFIG);
+            console.log("📧 Configuração EmailJS:", EMAILJS_CONFIG);
             
-            // Configurar timestamp
+            // Configurar timestamp inicial
             document.getElementById('initialTimestamp').textContent = 
                 new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
             
-            // Configurar textarea
+            // Configurar textarea do chat
             const chatInput = document.getElementById('chatInput');
             if (chatInput) {
                 chatInput.addEventListener('input', function() {
@@ -1243,7 +1351,11 @@
                 userNameInput.focus();
             }
             
-            showNotification("🤖 Samuel Tech IA está online! Pronta para ajudar.");
+            // Testar conexão com EmailJS
+            setTimeout(() => {
+                console.log("🔗 Testando conexão com EmailJS...");
+                showNotification("🤖 Samuel Tech IA está online! Pronta para ajudar.");
+            }, 1000);
         });
     </script>
 </body>
