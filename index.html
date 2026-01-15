@@ -662,11 +662,10 @@
 
     <script>
         // ==============================================
-        // 🔧 CONFIGURAÇÃO DO EMAILJS ATUALIZADA
+        // 🔧 CONFIGURAÇÃO DO EMAILJS COM CHAVES CORRETAS
         // ==============================================
         const EMAILJS_CONFIG = {
-            PUBLIC_KEY: "nrvxa22xM2RBvnyBZ", // SUA CHAVE PÚBLICA
-            PRIVATE_KEY: "m0r3TYxQw-GioGetsfyp-", // SUA CHAVE PRIVADA
+            PUBLIC_KEY: "d1LSjsMO02SIiWr7r", // SUA CHAVE PÚBLICA CORRETA
             SERVICE_ID: "service_ls0f8en",
             TEMPLATE_ID_CLIENT: "template_f1l0wee",
             TEMPLATE_ID_ADMIN: "template_6qhcp4p",
@@ -678,6 +677,7 @@
         (function() {
             emailjs.init(EMAILJS_CONFIG.PUBLIC_KEY);
             console.log("📧 EmailJS inicializado com chave:", EMAILJS_CONFIG.PUBLIC_KEY);
+            console.log("✅ Configuração completa:", EMAILJS_CONFIG);
         })();
 
         let userData = {
@@ -1069,57 +1069,58 @@
             
             const businessName = businessTypes[business] || business;
             
-            // Preparar parâmetros para o CLIENTE
-            const clientEmailParams = {
-                to_name: name,
-                to_email: email,
-                from_name: EMAILJS_CONFIG.COMPANY_NAME,
-                service_name: service,
-                business_type: business,
-                client_message: message || "Sem mensagem adicional",
-                date: dateFormatted,
-                phone: phone,
-                company_email: EMAILJS_CONFIG.COMPANY_EMAIL,
-                reply_to: EMAILJS_CONFIG.COMPANY_EMAIL
-            };
-            
-            // Preparar parâmetros para SAMUEL (admin)
-            const adminEmailParams = {
-                to_name: "Samuel Tech IA",
-                to_email: EMAILJS_CONFIG.COMPANY_EMAIL,
-                client_name: name,
-                client_email: email,
-                client_phone: phone,
-                client_business: businessName,
-                client_service: service,
-                client_message: message || "Sem mensagem adicional",
-                date: dateFormatted,
-                time: timeFormatted,
-                subject: `🚀 NOVA SOLICITAÇÃO: ${name} - ${service}`,
-                company_name: EMAILJS_CONFIG.COMPANY_NAME,
-                priority: "Alta"
-            };
-            
             try {
                 console.log("📧 Iniciando envio de e-mails...");
                 
                 // 1. Enviar e-mail para o CLIENTE (confirmação)
-                console.log("Enviando para cliente...");
-                await emailjs.send(
+                const clientEmailParams = {
+                    to_name: name,
+                    to_email: email,
+                    from_name: EMAILJS_CONFIG.COMPANY_NAME,
+                    service_name: service,
+                    business_type: businessName,
+                    client_message: message || "Sem mensagem adicional",
+                    date: dateFormatted,
+                    phone: phone,
+                    company_email: EMAILJS_CONFIG.COMPANY_EMAIL,
+                    reply_to: EMAILJS_CONFIG.COMPANY_EMAIL
+                };
+                
+                console.log("📤 Enviando para cliente:", clientEmailParams);
+                
+                const clientResponse = await emailjs.send(
                     EMAILJS_CONFIG.SERVICE_ID,
                     EMAILJS_CONFIG.TEMPLATE_ID_CLIENT,
                     clientEmailParams
                 );
-                console.log("✅ E-mail para cliente enviado!");
+                
+                console.log("✅ E-mail para cliente enviado! Status:", clientResponse.status);
                 
                 // 2. Enviar notificação para SAMUEL
-                console.log("Enviando para Samuel...");
-                await emailjs.send(
+                const adminEmailParams = {
+                    to_name: "Samuel Tech IA",
+                    to_email: EMAILJS_CONFIG.COMPANY_EMAIL,
+                    client_name: name,
+                    client_email: email,
+                    client_phone: phone,
+                    client_business: businessName,
+                    client_service: service,
+                    client_message: message || "Sem mensagem adicional",
+                    date: dateFormatted,
+                    time: timeFormatted,
+                    subject: `🚀 NOVA SOLICITAÇÃO: ${name} - ${service}`,
+                    company_name: EMAILJS_CONFIG.COMPANY_NAME
+                };
+                
+                console.log("📤 Enviando para Samuel:", adminEmailParams);
+                
+                const adminResponse = await emailjs.send(
                     EMAILJS_CONFIG.SERVICE_ID,
                     EMAILJS_CONFIG.TEMPLATE_ID_ADMIN,
                     adminEmailParams
                 );
-                console.log("✅ Notificação para Samuel enviada!");
+                
+                console.log("✅ Notificação para Samuel enviada! Status:", adminResponse.status);
                 
                 // Mostrar mensagem de sucesso
                 document.getElementById('emailFormContainer').classList.add('hidden');
@@ -1141,11 +1142,25 @@
                 
             } catch (error) {
                 console.error("❌ ERRO AO ENVIAR E-MAIL:", error);
-                showNotification("❌ Erro ao enviar e-mail. Tente novamente.");
+                
+                // Detectar tipo de erro
+                let errorMessage = "Erro ao enviar e-mail. ";
+                
+                if (error.status === 0) {
+                    errorMessage += "Sem conexão com a internet.";
+                } else if (error.text) {
+                    errorMessage += `Erro: ${error.text}`;
+                } else if (error.message) {
+                    errorMessage += error.message;
+                }
+                
+                showNotification(errorMessage);
                 
                 // FALLBACK: Abrir cliente de e-mail padrão
+                console.log("🔄 Acionando fallback (mailto)...");
+                
                 const subject = `🚀 SOLICITAÇÃO: ${service} - ${name}`;
-                const body = `NOVA SOLICITAÇÃO VIA CHATBOT
+                const body = `NOVA SOLICITAÇÃO VIA CHATBOT SAMUEL TECH IA
 ======================================
 👤 NOME: ${name}
 📧 E-MAIL: ${email}
@@ -1157,9 +1172,10 @@
 ======================================
 Enviado via Chatbot Samuel Tech IA
 
-Responda este e-mail ou entre em contato:
-📧 ${EMAILJS_CONFIG.COMPANY_EMAIL}
-🤖 Chatbot Samuel Tech IA`;
+Para responder, basta clicar em Responder ou entrar em contato:
+📧 E-mail: ${EMAILJS_CONFIG.COMPANY_EMAIL}
+📱 WhatsApp: (11) 91303-1275
+🌐 Samuel Tech IA`;
 
                 const mailtoLink = `mailto:${EMAILJS_CONFIG.COMPANY_EMAIL}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}&cc=${email}`;
                 
@@ -1173,16 +1189,17 @@ Responda este e-mail ou entre em contato:
                     
                     const successDiv = document.getElementById('emailSuccess');
                     successDiv.innerHTML = `
-                        <i class="fas fa-info-circle" style="font-size: 1.5em; margin-bottom: 10px; color: #17a2b8;"></i>
+                        <i class="fas fa-envelope-open-text" style="font-size: 1.5em; margin-bottom: 10px; color: #17a2b8;"></i>
                         <h4 style="margin-bottom: 8px;">📧 Cliente de E-mail Aberto</h4>
                         <p style="font-size: 0.9em;">Seu cliente de e-mail foi aberto automaticamente!</p>
-                        <p style="font-size: 0.9em;">Basta clicar em <strong>"Enviar"</strong> para finalizar.</p>
-                        <div style="background: #f8f9fa; padding: 10px; border-radius: 8px; margin: 15px 0; font-size: 0.85em;">
-                            <strong>Para:</strong> ${EMAILJS_CONFIG.COMPANY_EMAIL}<br>
-                            <strong>Assunto:</strong> ${subject.substring(0, 50)}...
+                        <p style="font-size: 0.9em;"><strong>1.</strong> Verifique os dados preenchidos<br>
+                        <strong>2.</strong> Clique em <strong>"Enviar"</strong> para finalizar</p>
+                        <div style="background: #f8f9fa; padding: 12px; border-radius: 8px; margin: 15px 0; font-size: 0.85em; border-left: 3px solid #00dbde;">
+                            <strong>📨 Destinatário:</strong> ${EMAILJS_CONFIG.COMPANY_EMAIL}<br>
+                            <strong>📋 Assunto:</strong> ${subject.substring(0, 60)}...
                         </div>
                         <button onclick="resetChat()" style="width: 100%; margin-top: 10px; background: var(--ai-gradient);">
-                            <i class="fas fa-redo"></i> Voltar ao Chat
+                            <i class="fas fa-comments"></i> Voltar ao Chat
                         </button>
                     `;
                     
@@ -1213,7 +1230,7 @@ Responda este e-mail ou entre em contato:
                 opt.classList.remove('selected');
             });
             
-            addBotMessage("🔄 Chat reiniciado! Como posso te ajudar agora?");
+            addBotMessage("🔄 Pronto! Como posso te ajudar agora?");
             
             setTimeout(() => {
                 document.getElementById('chatInput').focus();
@@ -1318,6 +1335,12 @@ Responda este e-mail ou entre em contato:
             console.log("🚀 Samuel Tech IA Chatbot carregado!");
             console.log("📧 Configuração EmailJS:", EMAILJS_CONFIG);
             
+            // Testar conexão com EmailJS
+            setTimeout(() => {
+                console.log("🔗 Testando conexão com EmailJS...");
+                showNotification("🤖 Samuel Tech IA está online! Pronta para ajudar.");
+            }, 1000);
+            
             // Configurar timestamp inicial
             document.getElementById('initialTimestamp').textContent = 
                 new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
@@ -1350,12 +1373,6 @@ Responda este e-mail ou entre em contato:
                 
                 userNameInput.focus();
             }
-            
-            // Testar conexão com EmailJS
-            setTimeout(() => {
-                console.log("🔗 Testando conexão com EmailJS...");
-                showNotification("🤖 Samuel Tech IA está online! Pronta para ajudar.");
-            }, 1000);
         });
     </script>
 </body>
