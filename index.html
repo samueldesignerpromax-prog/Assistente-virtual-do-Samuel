@@ -3,9 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Samuel Tech IA - Chatbot Inteligente 🤖</title>
+    <title>Samuel Designer ProMax - Chatbot</title>
     <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         * {
             margin: 0;
@@ -13,137 +12,52 @@
             box-sizing: border-box;
         }
 
-        :root {
-            --primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            --ai-gradient: linear-gradient(135deg, #00dbde 0%, #fc00ff 100%);
-            --whatsapp-gradient: linear-gradient(135deg, #25D366 0%, #128C7E 100%);
-            --success-gradient: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
-            --dark-bg: #0f172a;
-            --card-bg: rgba(255, 255, 255, 0.98);
-            --text-primary: #1e293b;
-            --text-secondary: #475569;
-            --shadow: 0 20px 60px rgba(0, 0, 0, 0.2);
-            --ai-glow: 0 0 40px rgba(0, 219, 222, 0.4);
-        }
-
         body {
-            font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, sans-serif;
-            background: var(--dark-bg);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             min-height: 100vh;
             display: flex;
             justify-content: center;
             align-items: center;
             padding: 20px;
-            position: relative;
-            overflow-x: hidden;
-        }
-
-        .tech-background {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: -1;
-            background: 
-                radial-gradient(circle at 20% 30%, rgba(0, 219, 222, 0.1) 0%, transparent 50%),
-                radial-gradient(circle at 80% 70%, rgba(252, 0, 255, 0.1) 0%, transparent 50%);
         }
 
         .chatbot-container {
             width: 100%;
-            max-width: 450px;
-            background: var(--card-bg);
-            backdrop-filter: blur(20px);
-            border-radius: 24px;
-            box-shadow: var(--shadow), var(--ai-glow);
+            max-width: 400px;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
             overflow: hidden;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            animation: fadeIn 0.6s ease;
-        }
-
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
         }
 
         .chatbot-header {
-            background: var(--ai-gradient);
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             color: white;
-            padding: 24px;
+            padding: 20px;
             text-align: center;
-            position: relative;
         }
 
         .chatbot-header h1 {
-            font-size: 1.8em;
-            margin-bottom: 8px;
-            font-weight: 800;
-            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+            font-size: 1.5em;
+            margin-bottom: 5px;
         }
 
         .chatbot-header p {
-            opacity: 0.95;
+            opacity: 0.9;
             font-size: 0.9em;
-            font-weight: 300;
-        }
-
-        .ai-status {
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            background: rgba(255, 255, 255, 0.2);
-            backdrop-filter: blur(10px);
-            padding: 6px 12px;
-            border-radius: 50px;
-            margin-top: 12px;
-            font-size: 0.8em;
-        }
-
-        .status-dot {
-            width: 8px;
-            height: 8px;
-            border-radius: 50%;
-            background: #00ff88;
-            animation: pulse 2s infinite;
-        }
-
-        @keyframes pulse {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.5; }
         }
 
         .chatbot-messages {
-            height: 500px;
+            height: 400px;
             overflow-y: auto;
             padding: 20px;
-            background: #f8fafc;
-            scroll-behavior: smooth;
-        }
-
-        .chatbot-messages::-webkit-scrollbar {
-            width: 6px;
-        }
-
-        .chatbot-messages::-webkit-scrollbar-track {
-            background: #f1f1f1;
-            border-radius: 10px;
-        }
-
-        .chatbot-messages::-webkit-scrollbar-thumb {
-            background: var(--ai-gradient);
-            border-radius: 10px;
+            background: #f8f9fa;
         }
 
         .message {
-            margin-bottom: 16px;
+            margin-bottom: 15px;
             display: flex;
-            animation: messageAppear 0.3s ease;
-        }
-
-        @keyframes messageAppear {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
         }
 
         .message.bot {
@@ -155,32 +69,29 @@
         }
 
         .message-content {
-            max-width: 85%;
-            padding: 14px 18px;
-            border-radius: 20px;
+            max-width: 80%;
+            padding: 12px 16px;
+            border-radius: 18px;
             font-size: 0.95em;
-            line-height: 1.5;
-            position: relative;
-            word-wrap: break-word;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+            line-height: 1.4;
         }
 
         .message.bot .message-content {
             background: white;
-            border: 1px solid #e2e8f0;
+            border: 1px solid #e1e5e9;
             border-bottom-left-radius: 5px;
         }
 
         .message.user .message-content {
-            background: var(--ai-gradient);
+            background: #667eea;
             color: white;
             border-bottom-right-radius: 5px;
         }
 
-        .chat-input-area {
+        .chatbot-input {
             padding: 20px;
             background: white;
-            border-top: 1px solid #f1f5f9;
+            border-top: 1px solid #e1e5e9;
         }
 
         .input-group {
@@ -188,1192 +99,645 @@
             gap: 10px;
         }
 
-        textarea {
-            flex: 1;
-            padding: 14px 16px;
-            border: 2px solid #e2e8f0;
-            border-radius: 14px;
+        input, select, button {
+            padding: 12px 16px;
+            border: 1px solid #ddd;
+            border-radius: 10px;
             font-size: 0.95em;
-            font-family: inherit;
-            background: #f8fafc;
-            resize: none;
-            transition: all 0.3s;
-            max-height: 120px;
         }
 
-        textarea:focus {
-            outline: none;
-            border-color: #00dbde;
-            background: white;
-            box-shadow: 0 0 0 4px rgba(0, 219, 222, 0.1);
+        input, select {
+            flex: 1;
+            background: #f8f9fa;
         }
 
         button {
-            padding: 14px 20px;
-            border-radius: 14px;
-            border: none;
-            background: var(--ai-gradient);
+            background: #667eea;
             color: white;
-            font-weight: 600;
+            border: none;
             cursor: pointer;
-            transition: all 0.3s;
-            box-shadow: 0 4px 12px rgba(0, 219, 222, 0.2);
-            display: flex;
-            align-items: center;
-            gap: 8px;
+            transition: background 0.3s;
         }
 
         button:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 16px rgba(0, 219, 222, 0.3);
+            background: #5a6fd8;
         }
 
-        .quick-questions {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 8px;
-            margin-top: 16px;
-        }
-
-        .quick-question-btn {
-            background: rgba(0, 219, 222, 0.1);
-            border: 2px solid rgba(0, 219, 222, 0.2);
-            color: #00dbde;
-            padding: 8px 14px;
-            border-radius: 50px;
-            font-size: 0.85em;
-            cursor: pointer;
-            transition: all 0.3s;
-            font-weight: 500;
-            display: flex;
-            align-items: center;
-            gap: 6px;
-        }
-
-        .quick-question-btn:hover {
-            background: #00dbde;
-            color: white;
-            transform: translateY(-1px);
-        }
-
-        .typing-indicator {
-            display: inline-flex;
-            align-items: center;
-            padding: 10px;
-            background: white;
-            border-radius: 20px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-        }
-
-        .typing-dot {
-            width: 8px;
-            height: 8px;
-            border-radius: 50%;
-            background: var(--ai-gradient);
-            margin: 0 3px;
-            animation: typing 1.4s infinite ease-in-out;
-        }
-
-        .typing-dot:nth-child(1) { animation-delay: -0.32s; }
-        .typing-dot:nth-child(2) { animation-delay: -0.16s; }
-
-        @keyframes typing {
-            0%, 60%, 100% { transform: translateY(0); }
-            30% { transform: translateY(-6px); }
-        }
-
-        .menu-options {
+        .options-grid {
             display: grid;
-            grid-template-columns: repeat(2, 1fr);
             gap: 10px;
-            margin-top: 15px;
+            margin-top: 10px;
         }
 
-        .menu-option {
+        .option-btn {
             background: white;
-            border: 2px solid #e2e8f0;
-            border-radius: 14px;
-            padding: 16px;
-            text-align: center;
+            border: 2px solid #667eea;
+            color: #667eea;
+            padding: 12px;
+            border-radius: 10px;
             cursor: pointer;
-            transition: all 0.3s;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .menu-option:hover {
-            border-color: #00dbde;
-            background: rgba(0, 219, 222, 0.05);
-            transform: translateY(-4px);
-            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
-        }
-
-        .menu-option i {
-            font-size: 1.5em;
-            background: var(--ai-gradient);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-
-        .timestamp {
-            font-size: 0.7em;
-            opacity: 0.6;
-            margin-top: 4px;
-            text-align: right;
-        }
-
-        .message.bot .timestamp {
             text-align: left;
+            transition: all 0.3s;
+        }
+
+        .option-btn:hover {
+            background: #667eea;
+            color: white;
         }
 
         .hidden {
             display: none;
         }
 
-        .success-message {
-            background: linear-gradient(135deg, #d4edda 0%, #c3e6cb 100%);
-            color: #155724;
-            padding: 18px;
-            border-radius: 14px;
-            margin: 15px 0;
-            border-left: 4px solid #28a745;
-            animation: fadeIn 0.5s ease;
-        }
-
-        .name-input-container {
-            background: rgba(0, 219, 222, 0.05);
-            padding: 20px;
-            border-radius: 14px;
-            margin-top: 15px;
-            border: 2px dashed rgba(0, 219, 222, 0.2);
-        }
-
-        .name-input-container input {
-            width: 100%;
-            padding: 12px 16px;
-            border: 2px solid #00dbde;
-            border-radius: 12px;
-            font-size: 1em;
-            margin-top: 10px;
+        .package-info {
             background: white;
+            padding: 15px;
+            border-radius: 10px;
+            margin: 10px 0;
+            border-left: 4px solid #667eea;
         }
 
-        .user-name-highlight {
-            color: #00dbde;
-            font-weight: 700;
+        .package-info h3 {
+            color: #333;
+            margin-bottom: 10px;
+        }
+
+        .package-info ul {
+            list-style: none;
+            margin-bottom: 10px;
+        }
+
+        .package-info li {
+            padding: 5px 0;
+            border-bottom: 1px solid #f0f0f0;
+        }
+
+        .package-info li:last-child {
+            border-bottom: none;
         }
 
         .whatsapp-btn {
-            display: inline-flex;
-            align-items: center;
-            gap: 10px;
-            background: var(--whatsapp-gradient);
+            background: #25D366;
             color: white;
-            padding: 16px 24px;
-            border-radius: 14px;
+            padding: 12px 20px;
+            border-radius: 10px;
             text-decoration: none;
-            font-weight: 600;
+            display: inline-block;
+            text-align: center;
             margin-top: 10px;
-            box-shadow: 0 4px 12px rgba(37, 211, 102, 0.2);
-            transition: all 0.3s;
-        }
-
-        .whatsapp-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 16px rgba(37, 211, 102, 0.3);
+            font-weight: bold;
+            width: 100%;
         }
 
         .form-group {
-            margin-bottom: 16px;
+            margin-bottom: 15px;
         }
 
         .form-group label {
             display: block;
-            margin-bottom: 6px;
-            font-weight: 600;
-            color: var(--text-primary);
+            margin-bottom: 5px;
+            font-weight: 500;
+            color: #333;
+        }
+
+        .loading {
+            text-align: center;
+            color: #667eea;
+            font-style: italic;
+        }
+
+        .success-message {
+            background: #d4edda;
+            color: #155724;
+            padding: 15px;
+            border-radius: 10px;
+            margin: 10px 0;
+            border-left: 4px solid #28a745;
+        }
+        
+        .error-message {
+            background: #f8d7da;
+            color: #721c24;
+            padding: 10px;
+            border-radius: 10px;
+            margin: 10px 0;
+            border-left: 4px solid #dc3545;
             font-size: 0.9em;
         }
-
-        .form-group input,
-        .form-group select,
-        .form-group textarea {
-            width: 100%;
-            padding: 12px 14px;
-            border: 2px solid #e2e8f0;
-            border-radius: 12px;
-            font-size: 0.95em;
-            font-family: inherit;
-            background: #f8fafc;
-            transition: all 0.3s;
+        
+        .budget-calculator {
+            background: #e7f3ff;
+            padding: 15px;
+            border-radius: 10px;
+            margin: 10px 0;
+            border-left: 4px solid #007bff;
         }
-
-        .form-group input:focus,
-        .form-group select:focus,
-        .form-group textarea:focus {
-            outline: none;
-            border-color: #00dbde;
-            background: white;
-            box-shadow: 0 0 0 4px rgba(0, 219, 222, 0.1);
-        }
-
-        .service-options {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 10px;
-            margin-top: 8px;
-        }
-
-        .service-option {
-            padding: 14px;
-            border: 2px solid #e2e8f0;
-            border-radius: 12px;
-            text-align: center;
-            cursor: pointer;
-            transition: all 0.3s;
-        }
-
-        .service-option:hover {
-            border-color: #00dbde;
-            background: rgba(0, 219, 222, 0.05);
-        }
-
-        .service-option.selected {
-            background: var(--ai-gradient);
-            color: white;
-            border-color: #00dbde;
-        }
-
-        .notification {
-            position: fixed;
-            bottom: 80px;
-            right: 20px;
-            background: white;
-            padding: 12px 20px;
-            border-radius: 12px;
-            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
-            border-left: 4px solid #00dbde;
-            transform: translateX(120%);
-            transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            z-index: 1000;
-            max-width: 300px;
-        }
-
-        .notification.show {
-            transform: translateX(0);
-        }
-
-        .loading-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(15, 23, 42, 0.9);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            z-index: 2000;
-            display: none;
-        }
-
-        .loading-spinner {
-            width: 50px;
-            height: 50px;
-            border: 3px solid rgba(0, 219, 222, 0.3);
-            border-radius: 50%;
-            border-top-color: #00dbde;
-            animation: spin 1s linear infinite;
-        }
-
-        @keyframes spin {
-            to { transform: rotate(360deg); }
+        
+        .budget-result {
+            background: #fff3cd;
+            padding: 15px;
+            border-radius: 10px;
+            margin: 10px 0;
+            border-left: 4px solid #ffc107;
+            font-weight: bold;
         }
     </style>
 </head>
 <body>
-    <div class="tech-background"></div>
-    
-    <!-- Loading Overlay -->
-    <div class="loading-overlay" id="loadingOverlay">
-        <div class="loading-spinner"></div>
-    </div>
-    
-    <!-- Notification -->
-    <div class="notification" id="notification">
-        <i class="fas fa-bell"></i> <span id="notificationText"></span>
-    </div>
-
-    <div class="chatbot-container">
-        <div class="chatbot-header">
-            <h1>Samuel Tech IA</h1>
-            <p>Inteligência Artificial para seu Negócio</p>
-            <div class="ai-status">
-                <div class="status-dot"></div>
-                <span>IA ATIVA</span>
-            </div>
-        </div>
-
-        <div class="chatbot-messages" id="chatbotMessages">
+@@ -227,7 +254,7 @@
             <div class="message bot">
                 <div class="message-content">
-                    <strong>🤖 Olá! Eu sou a Sam, sua assistente IA!</strong><br><br>
-                    Antes de começarmos, como posso te chamar? 😊<br>
-                    <small><em>Me conta seu nome pra nossa conversa ficar mais pessoal!</em></small>
+                    Olá! Sou o assistente da Samuel Designer ProMax 🚀<br><br>
+                    Posso explicar nossos pacotes de sites e lojas virtuais!<br><br>
+                    Oferecemos <strong>portfólios profissionais, sites institucionais, lojas virtuais e muito mais!</strong><br><br>
+                    <strong>Escolha uma opção:</strong>
                 </div>
-                <div class="timestamp" id="initialTimestamp"></div>
             </div>
-        </div>
+@@ -237,18 +264,21 @@
+            <div id="initialOptions">
+                <div class="options-grid">
+                    <button class="option-btn" onclick="selectOption(1)">
+                        📄 Pacote Básico - R$ 350
+                        📄 Portfólio Pessoal - R$ 350
+                    </button>
+                    <button class="option-btn" onclick="selectOption(2)">
+                        ⚡ Intermediário - R$ 650
+                        ⚡ Site Institucional - R$ 650
+                    </button>
+                    <button class="option-btn" onclick="selectOption(3)">
+                        🌟 Avançado - R$ 1.200
+                        🌟 Site Avançado - R$ 1.200
+                    </button>
+                    <button class="option-btn" onclick="selectOption(4)">
+                        🛒 Loja Virtual - R$ 1.800
+                    </button>
+                    <button class="option-btn" onclick="selectOption(5)">
+                        💼 Orçamento Personalizado
+                    </button>
+                    <button class="option-btn" onclick="selectOption(6)">
+                        💬 Falar com Samuel
+                    </button>
+                </div>
+@@ -262,6 +292,14 @@
+                <button onclick="saveName()">Continuar</button>
+            </div>
 
-        <div class="chat-input-area">
-            <!-- Input para nome -->
-            <div id="nameInputContainer" class="name-input-container">
-                <label>👤 Qual seu nome?</label>
-                <input type="text" id="userNameInput" placeholder="Digite seu nome aqui...">
-                <button onclick="saveUserName()">
-                    <i class="fas fa-check"></i> Continuar
-                </button>
+            <div id="emailInput" class="hidden">
+                <div class="form-group">
+                    <label>📧 Qual seu e-mail?</label>
+                    <input type="email" id="userEmail" placeholder="seu@email.com">
+                </div>
+                <button onclick="saveEmail()">Continuar</button>
+            </div>
+
+            <div id="phoneInput" class="hidden">
+                <div class="form-group">
+                    <label>📱 Qual seu WhatsApp com DDD?</label>
+@@ -285,11 +323,48 @@
+                </div>
+                <button onclick="saveColors()">Continuar</button>
             </div>
             
-            <!-- Chat normal (inicialmente escondido) -->
-            <div id="normalChat" class="hidden">
-                <div class="input-group">
-                    <textarea id="chatInput" placeholder="Digite sua mensagem aqui..." rows="2"></textarea>
-                    <button onclick="sendMessage()">
-                        <i class="fas fa-paper-plane"></i>
-                    </button>
-                </div>
-                
-                <div class="quick-questions">
-                    <button class="quick-question-btn" onclick="askQuickQuestion('Oi')">
-                        <i class="fas fa-hand-wave"></i> Oi
-                    </button>
-                    <button class="quick-question-btn" onclick="askQuickQuestion('Tudo bem?')">
-                        <i class="fas fa-smile"></i> Tudo bem?
-                    </button>
-                    <button class="quick-question-btn" onclick="askQuickQuestion('O que vocês fazem?')">
-                        <i class="fas fa-robot"></i> Serviços
-                    </button>
-                    <button class="quick-question-btn" onclick="askQuickQuestion('Preciso de ajuda')">
-                        <i class="fas fa-question-circle"></i> Ajuda
-                    </button>
-                    <button class="quick-question-btn" onclick="askQuickQuestion('Menu')">
-                        <i class="fas fa-bars"></i> Menu
-                    </button>
-                    <button class="quick-question-btn" onclick="showEmailForm()">
-                        <i class="fas fa-envelope"></i> E-mail
-                    </button>
-                </div>
-            </div>
-
-            <!-- Formulário de Email -->
-            <div id="emailFormContainer" class="hidden">
-                <div style="margin-bottom: 20px;">
-                    <h4 style="color: var(--text-primary); margin-bottom: 10px;">
-                        <i class="fas fa-envelope" style="color: #00dbde;"></i>
-                        Enviar E-mail
-                    </h4>
-                    <p style="color: var(--text-secondary); font-size: 0.9em;">
-                        Preencha seus dados para enviarmos um orçamento personalizado!
-                    </p>
-                </div>
-                
-                <div class="form-group">
-                    <label for="emailName">👤 Nome Completo *</label>
-                    <input type="text" id="emailName" placeholder="Seu nome" required>
-                </div>
-                
-                <div class="form-group">
-                    <label for="emailEmail">📧 E-mail *</label>
-                    <input type="email" id="emailEmail" placeholder="seu@email.com" required>
-                </div>
-                
-                <div class="form-group">
-                    <label for="emailPhone">📱 WhatsApp *</label>
-                    <input type="tel" id="emailPhone" placeholder="(11) 99999-9999" required>
-                </div>
-                
-                <div class="form-group">
-                    <label for="emailBusiness">🏢 Tipo de Negócio *</label>
-                    <select id="emailBusiness" required>
-                        <option value="">Selecione</option>
-                        <option value="pizzaria">Pizzaria/Lanchonete</option>
-                        <option value="pet">Pet Shop</option>
-                        <option value="salon">Salão/Barberia</option>
-                        <option value="clinic">Clínica/Consultório</option>
-                        <option value="store">Loja/E-commerce</option>
-                        <option value="digital">Serviços Digitais</option>
-                        <option value="other">Outro</option>
-                    </select>
-                </div>
-                
-                <div class="form-group">
-                    <label>💼 Serviço de Interesse *</label>
-                    <div class="service-options">
-                        <div class="service-option" onclick="selectService(this, 'Site Institucional')">
-                            <i class="fas fa-globe"></i>
-                            <div>Site</div>
-                        </div>
-                        <div class="service-option" onclick="selectService(this, 'Chatbot IA')">
-                            <i class="fas fa-robot"></i>
-                            <div>Chatbot IA</div>
-                        </div>
-                        <div class="service-option" onclick="selectService(this, 'Automação WhatsApp')">
-                            <i class="fab fa-whatsapp"></i>
-                            <div>WhatsApp</div>
-                        </div>
-                        <div class="service-option" onclick="selectService(this, 'Sistema Personalizado')">
-                            <i class="fas fa-cogs"></i>
-                            <div>Sistema</div>
-                        </div>
+            <div id="budgetCalculator" class="hidden">
+                <div class="budget-calculator">
+                    <h3>💰 Calculadora de Orçamento</h3>
+                    <div class="form-group">
+                        <label>Tipo de Projeto:</label>
+                        <select id="projectType">
+                            <option value="portfolio">Portfólio Pessoal</option>
+                            <option value="institutional">Site Institucional</option>
+                            <option value="ecommerce">Loja Virtual</option>
+                            <option value="landing">Landing Page</option>
+                            <option value="blog">Blog</option>
+                            <option value="other">Outro</option>
+                        </select>
                     </div>
-                    <input type="hidden" id="selectedService" value="">
-                    <small style="color: #dc3545; display: none;" id="serviceError">Selecione um serviço</small>
+                    <div class="form-group">
+                        <label>Quantidade de Páginas:</label>
+                        <select id="pageCount">
+                            <option value="1">1 página</option>
+                            <option value="3-5">3-5 páginas</option>
+                            <option value="6-10">6-10 páginas</option>
+                            <option value="10+">Mais de 10 páginas</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Prazo de Entrega:</label>
+                        <select id="deliveryTime">
+                            <option value="7">Até 7 dias</option>
+                            <option value="14">Até 14 dias</option>
+                            <option value="30">Até 30 dias</option>
+                            <option value="no-rush">Sem pressa</option>
+                        </select>
+                    </div>
+                    <button onclick="calculateBudget()">Calcular Orçamento</button>
                 </div>
-                
-                <div class="form-group">
-                    <label for="emailMessage">📝 Mensagem (opcional)</label>
-                    <textarea id="emailMessage" rows="3" placeholder="Descreva sua necessidade..."></textarea>
-                </div>
-                
-                <button onclick="sendEmail(event)" style="width: 100%; background: var(--ai-gradient);">
-                    <i class="fas fa-paper-plane"></i> Enviar E-mail
-                </button>
-                
-                <button onclick="hideEmailForm()" style="width: 100%; margin-top: 10px; background: #6c757d;">
-                    <i class="fas fa-arrow-left"></i> Voltar ao Chat
-                </button>
             </div>
 
-            <!-- Mensagem de sucesso do email -->
-            <div id="emailSuccess" class="success-message hidden">
-                <i class="fas fa-check-circle" style="font-size: 1.5em; margin-bottom: 10px; color: #28a745;"></i>
-                <h4 style="margin-bottom: 8px;">✅ E-mail Enviado!</h4>
-                <p style="font-size: 0.9em;">Seu e-mail foi enviado para <strong>samueldesinerpromax@gmail.com</strong></p>
-                <p style="font-size: 0.9em;">Você receberá uma resposta em até 2 horas úteis.</p>
-                <button onclick="resetChat()" style="width: 100%; margin-top: 15px; background: var(--ai-gradient);">
-                    <i class="fas fa-redo"></i> Voltar ao Início
-                </button>
-            </div>
-        </div>
-    </div>
-
-    <script>
-        // ==============================================
-        // 🔧 CONFIGURAÇÃO DO EMAILJS COM CHAVES CORRETAS
-        // ==============================================
-        const EMAILJS_CONFIG = {
-            PUBLIC_KEY: "d1LSjsMO02SIiWr7r", // SUA CHAVE PÚBLICA CORRETA
-            SERVICE_ID: "service_ls0f8en",
-            TEMPLATE_ID_CLIENT: "template_f1l0wee",
-            TEMPLATE_ID_ADMIN: "template_6qhcp4p",
-            COMPANY_EMAIL: "samueldesinerpromax@gmail.com",
-            COMPANY_NAME: "Samuel Tech IA"
-        };
-
-        // Inicializar EmailJS
-        (function() {
-            emailjs.init(EMAILJS_CONFIG.PUBLIC_KEY);
-            console.log("📧 EmailJS inicializado com chave:", EMAILJS_CONFIG.PUBLIC_KEY);
-            console.log("✅ Configuração completa:", EMAILJS_CONFIG);
-        })();
+            <div id="finalMessage" class="hidden">
+                <div class="success-message">
+                    <h3>🎉 Dados enviados com sucesso!</h3>
+                    <p>📧 <strong>Enviado para:</strong> samueldesignerpromax@gmail.com</p>
+                    <p>📧 <strong>Você receberá um e-mail de confirmação em instantes!</strong></p>
+                    <p>📞 <strong>Samuel vai te chamar no WhatsApp em até 5 minutos!</strong></p>
+                </div>
+                <a href="#" id="whatsappLink" class="whatsapp-btn" target="_blank">
+@@ -306,64 +381,78 @@
 
         let userData = {
-            userName: '',
             name: '',
             email: '',
             phone: '',
-            businessType: '',
-            selectedService: ''
+            business: '',
+            colors: '',
+            selectedPackage: ''
+            selectedPackage: '',
+            budget: null
         };
 
-        // Base de conhecimento inteligente
-        const knowledgeBase = {
-            saudacoes: {
-                responses: [
-                    "Oi 😊 Seja bem-vindo à Samuel Tech IA! Como posso te ajudar hoje?",
-                    "Olá! 👋 Que bom te ver aqui na Samuel Tech IA! Em que posso te auxiliar?",
-                    "Oi oi! 😄 Bem-vindo! Sou a Sam, sua assistente IA. Como posso ajudar?"
+        const packages = {
+            1: {
+                name: 'Pacote Básico',
+                name: 'Portfólio Pessoal',
+                price: 'R$ 350',
+                description: 'Ideal para quem quer apenas marcar presença online.',
+                description: 'Ideal para profissionais que querem mostrar seu trabalho.',
+                features: [
+                    '1 página (Landing Page ou apresentação simples)',
+                    'Layout responsivo (celular, tablet e PC)',
+                    'Formulário de contato ou link WhatsApp',
+                    'Entrega em até 5 dias úteis'
+                ]
                 ],
-                triggers: ["oi", "olá", "ola", "oii", "oiii", "opa", "eae", "e aí", "salve", "hello", "hey"]
+                message: 'Perfeito para destacar seu trabalho! Seu portfólio ficará incrível e profissional.'
             },
-            
-            tudoBem: {
-                responses: [
-                    "Tudo ótimo 😄 Obrigado por perguntar! Em que posso ajudar?",
-                    "Estou muito bem! 😊 Pronta para te auxiliar hoje. Como vai você?",
-                    "Tudo certo! 💪 Cheia de energia para resolver suas dúvidas!"
+            2: {
+                name: 'Pacote Intermediário',
+                name: 'Site Institucional',
+                price: 'R$ 650',
+                description: 'Para quem precisa de mais estrutura e personalização.',
+                description: 'Para empresas que precisam de mais estrutura e personalização.',
+                features: [
+                    'Até 5 páginas (Home, Sobre, Serviços, Contato etc.)',
+                    'Design profissional e personalizado',
+                    'Integração com redes sociais',
+                    'SEO básico (aparece no Google)',
+                    'Entrega em até 7 dias úteis'
+                ]
                 ],
-                triggers: ["tudo bem", "td bem", "blz", "beleza", "suave", "de boa", "como vai", "tudo bom"]
+                message: 'Excelente escolha! Seu site institucional transmitirá credibilidade e profissionalismo.'
             },
-            
-            quemSou: {
-                responses: [
-                    "Sou um assistente virtual com inteligência artificial 🤖, mas posso chamar um humano quando quiser.",
-                    "Eu sou a Sam, assistente IA da Samuel Tech IA! Posso te ajudar com informações e, se precisar, te conecto com nossa equipe humana.",
-                    "Sou inteligência artificial 🤖 criada para te atender rapidamente. Mas se preferir falar com humano, é só pedir!"
+            3: {
+                name: 'Pacote Avançado',
+                name: 'Site Avançado',
+                price: 'R$ 1.200',
+                description: 'Para empresas que querem se destacar.',
+                description: 'Para empresas que querem se destacar com funcionalidades avançadas.',
+                features: [
+                    'Até 10 páginas completas',
+                    'Blog ou área de novidades',
+                    'Painel administrativo simples',
+                    'Integração com Google Maps',
+                    'Suporte técnico por 30 dias'
+                ]
                 ],
-                triggers: ["vc é humano", "é robô", "é ia", "inteligência artificial", "quem é vc"]
+                message: 'Incrível! Com este site avançado, sua empresa terá todas as ferramentas para crescer online.'
             },
-            
-            servicos: {
-                responses: [
-                    "Criamos sites profissionais, chatbots com IA, automações, integrações com WhatsApp e soluções digitais sob medida.",
-                    "Trabalhamos com: • Sites otimizados • Chatbots inteligentes • Automações • Integração WhatsApp • Sistemas personalizados",
-                    "Oferecemos soluções completas: desde sites até chatbots 24h que atendem automaticamente seus clientes!"
+            4: {
+                name: 'Pacote Loja Virtual',
+                name: 'Loja Virtual',
+                price: 'R$ 1.800',
+                description: 'Pra quem quer vender direto pela internet.',
+                features: [
+                    'E-commerce completo (produtos ilimitados)',
+                    'Carrinho de compras e formas de pagamento',
+                    'Painel de controle e gerenciamento de pedidos',
+                    'Design 100% profissional e otimizado'
+                ]
                 ],
-                triggers: ["oq vcs fazem", "serviços", "trabalham com", "fazem o que", "que serviços"]
+                message: 'Fantástico! Sua loja virtual estará pronta para vender e conquistar clientes.'
             },
-            
-            site: {
-                responses: [
-                    "Temos opções acessíveis 😊 Posso entender sua necessidade e te indicar a melhor solução.",
-                    "Sim! Criamos sites otimizados que aparecem no Google 🔍 e você pode editar quando quiser.",
-                    "Fazemos sites responsivos, rápidos e que convertem visitantes em clientes! Posso te explicar melhor?"
-                ],
-                triggers: ["faz site", "site barato", "aparece no google", "dá pra editar", "site profissional"]
+            5: {
+                name: 'Orçamento Personalizado',
+                price: 'A partir de R$ 250',
+                description: 'Projeto sob medida para suas necessidades específicas.',
+                features: ['Análise personalizada', 'Proposta detalhada', 'Cronograma flexível'],
+                message: 'Vamos criar um projeto único para você! Preencha os detalhes para um orçamento personalizado.'
             },
-            
-            chatbot: {
-                responses: [
-                    "Sim 🤖 Ele atende 24h automaticamente e reduz muito o trabalho humano.",
-                    "Nosso chatbot é inteligente! Ele entende erros de digitação, abreviações e responde como se fosse humano.",
-                    "O bot funciona no WhatsApp e responde fora do horário comercial também! É uma mão na roda para seu negócio."
-                ],
-                triggers: ["chatbot", "bot responde", "entende erro", "funciona whatsapp", "24 horas"]
-            },
-            
-            preco: {
-                responses: [
-                    "Temos soluções para diferentes orçamentos 😊 Posso te explicar as opções.",
-                    "Dependendo do projeto, podemos oferecer condições especiais. Vamos conversar?",
-                    "Cada projeto é único! Posso te fazer algumas perguntas e dar um orçamento personalizado."
-                ],
-                triggers: ["preço", "é caro", "tem desconto", "quanto custa", "valor", "orçamento"]
-            },
-            
-            prazo: {
-                responses: [
-                    "Entendo 🚀 Podemos verificar uma entrega rápida para você.",
-                    "Posso verificar a melhor opção de prazo para sua necessidade.",
-                    "Temos opções expressas! Me conta o que precisa que já verifico."
-                ],
-                triggers: ["preciso rápido", "faz hoje", "urgente", "prazo", "tempo", "quando fica"]
-            },
-            
-            confianca: {
-                responses: [
-                    "Sim 😊 Já desenvolvemos projetos para diversos clientes. Posso mostrar exemplos.",
-                    "Trabalhamos com contrato e transparência 📄 Sua segurança é nossa prioridade.",
-                    "Temos portfólio com cases reais! Posso te mostrar o que já fizemos."
-                ],
-                triggers: ["já fizeram", "tem prova", "contrato", "confiável", "funciona mesmo"]
-            },
-            
-            humano: {
-                responses: [
-                    "Sem problemas 😊 Vou te encaminhar para um atendente humano agora.",
-                    "Entendo 👍 Vou chamar um atendente para te ajudar melhor.",
-                    "Claro! Um momento enquanto conecto você com nossa equipe."
-                ],
-                triggers: ["humano", "atendente", "alguém de verdade", "vc não resolve", "pessoa"]
-            },
-            
-            duvidas: {
-                responses: [
-                    "😅 Não entendi muito bem. Pode reformular ou digitar 'menu'?",
-                    "🤔 Pode me explicar de outra forma? Ou digite 'ajuda' para ver opções.",
-                    "Não peguei bem... Tenta me dizer de outro jeito?"
-                ],
-                triggers: ["???", "nada", "sei lá", "que", "como assim", "não entendi", "hm"]
-            },
-            
-            agradecimento: {
-                responses: [
-                    "Ah, que isso! 😊 Fico feliz em poder ajudar!",
-                    "Imagina! 😄 É um prazer te atender!",
-                    "Por nada! 🙏 Qualquer dúvida estou aqui!"
-                ],
-                triggers: ["obrigado", "obrigada", "valeu", "brigado", "agradeço", "obg"]
-            },
-            
-            despedida: {
-                responses: [
-                    "Até mais! 👋 Qualquer dúvida estou aqui!",
-                    "Tchau! 😊 Volte sempre que precisar!",
-                    "Até logo! Foi um prazer te ajudar!"
-                ],
-                triggers: ["tchau", "até", "adeus", "flw", "falou", "bye", "xau"]
+            6: {
+                name: 'Falar com Samuel',
+                price: '',
+                description: 'Conversa direta com o especialista.',
+                features: ['Atendimento personalizado']
+                features: ['Atendimento personalizado'],
+                message: 'Ótimo! O Samuel entrará em contato para entender suas necessidades e oferecer a melhor solução.'
             }
         };
 
-        // ==============================================
-        // FUNÇÕES PRINCIPAIS
-        // ==============================================
+@@ -373,9 +462,16 @@
+            document.getElementById('initialOptions').classList.add('hidden');
+            showPackageInfo(option);
 
-        function saveUserName() {
-            const nameInput = document.getElementById('userNameInput');
-            const userName = nameInput.value.trim();
+            setTimeout(() => {
+                document.getElementById('nameInput').classList.remove('hidden');
+            }, 1000);
+            // Se for orçamento personalizado, mostrar calculadora
+            if (option === 5) {
+                setTimeout(() => {
+                    document.getElementById('budgetCalculator').classList.remove('hidden');
+                }, 1000);
+            } else {
+                setTimeout(() => {
+                    document.getElementById('nameInput').classList.remove('hidden');
+                }, 1000);
+            }
+        }
+
+        function showPackageInfo(option) {
+@@ -392,26 +488,45 @@
+            message += `</ul></div>`;
+
+            addBotMessage(message);
             
-            if (!userName) {
-                showNotification("Por favor, digite seu nome!");
+            // Adicionar mensagem personalizada baseada no plano
+            setTimeout(() => {
+                addBotMessage(package.message);
+            }, 500);
+        }
+
+        function saveName() {
+            const name = document.getElementById('userName').value;
+            if (name.trim() === '') {
+                alert('Por favor, digite seu nome');
+                showError('Por favor, digite seu nome');
+                return;
+            }
+
+            userData.name = name;
+            document.getElementById('nameInput').classList.add('hidden');
+            document.getElementById('phoneInput').classList.remove('hidden');
+            document.getElementById('emailInput').classList.remove('hidden');
+
+            addUserMessage(name);
+        }
+
+        function saveEmail() {
+            const email = document.getElementById('userEmail').value;
+            if (email.trim() === '' || !validateEmail(email)) {
+                showError('Por favor, digite um e-mail válido');
                 return;
             }
             
-            userData.userName = userName;
+            userData.email = email;
+            document.getElementById('emailInput').classList.add('hidden');
+            document.getElementById('phoneInput').classList.remove('hidden');
             
-            document.getElementById('nameInputContainer').classList.add('hidden');
-            document.getElementById('normalChat').classList.remove('hidden');
-            
-            addBotMessage(`Que legal te conhecer, <span class="user-name-highlight">${userName}</span>! 😊<br><br>Agora sim, como posso te ajudar hoje?`);
-            
-            setTimeout(() => {
-                document.getElementById('chatInput').focus();
-            }, 300);
+            addUserMessage(email);
         }
 
-        function sendMessage() {
-            const input = document.getElementById('chatInput');
-            const message = input.value.trim();
-            
-            if (!message) return;
-            
-            addUserMessage(message);
-            input.value = '';
-            input.style.height = 'auto';
-            
-            showTypingIndicator();
-            
-            setTimeout(() => {
-                removeTypingIndicator();
-                const response = getBotResponse(message);
-                addBotMessage(response);
-                
-                if (message.toLowerCase().includes('humano') || 
-                    message.toLowerCase().includes('atendente') || 
-                    message.toLowerCase().includes('pessoa')) {
-                    setTimeout(() => {
-                        showWhatsAppOption();
-                    }, 1000);
-                }
-                
-                if (message.toLowerCase().includes('menu') || 
-                    message.toLowerCase().includes('ajuda') || 
-                    message.toLowerCase().includes('opções')) {
-                    setTimeout(() => {
-                        showMenu();
-                    }, 1000);
-                }
-            }, 1200);
-        }
+        function savePhone() {
+            const phone = document.getElementById('userPhone').value;
+            if (phone.trim() === '') {
+                alert('Por favor, digite seu WhatsApp');
+                showError('Por favor, digite seu WhatsApp');
+                return;
+            }
 
-        function getBotResponse(message) {
-            const lowerMsg = message.toLowerCase();
+@@ -425,7 +540,7 @@
+        function saveBusiness() {
+            const business = document.getElementById('userBusiness').value;
+            if (business.trim() === '') {
+                alert('Por favor, digite seu ramo de negócio');
+                showError('Por favor, digite seu ramo de negócio');
+                return;
+            }
+
+@@ -452,33 +567,141 @@
+                sendDataToEmailJS();
+            }, 2000);
+        }
+        
+        function calculateBudget() {
+            const projectType = document.getElementById('projectType').value;
+            const pageCount = document.getElementById('pageCount').value;
+            const deliveryTime = document.getElementById('deliveryTime').value;
             
-            for (const category in knowledgeBase) {
-                const triggers = knowledgeBase[category].triggers;
-                if (triggers.some(trigger => lowerMsg.includes(trigger))) {
-                    const responses = knowledgeBase[category].responses;
-                    let response = responses[Math.floor(Math.random() * responses.length)];
-                    
-                    if (userData.userName && category !== 'saudacoes' && category !== 'tudoBem') {
-                        response = userData.userName + ", " + response.charAt(0).toLowerCase() + response.slice(1);
-                    }
-                    
-                    return response;
-                }
+            // Cálculo básico do orçamento
+            let basePrice = 0;
+            
+            switch(projectType) {
+                case 'portfolio':
+                    basePrice = 350;
+                    break;
+                case 'institutional':
+                    basePrice = 650;
+                    break;
+                case 'ecommerce':
+                    basePrice = 1800;
+                    break;
+                case 'landing':
+                    basePrice = 400;
+                    break;
+                case 'blog':
+                    basePrice = 550;
+                    break;
+                case 'other':
+                    basePrice = 500;
+                    break;
             }
             
-            const defaultResponses = [
-                "🤔 Interessante! Posso te ajudar com informações sobre nossos serviços. Digite 'menu' para ver opções.",
-                "😊 Entendi! Em que posso ser útil? Posso falar sobre sites, chatbots ou automações.",
-                "💡 Posso te ajudar melhor se me disser o que precisa: 1) Sites 2) Chatbots 3) WhatsApp 4) Orçamento"
-            ];
+            // Ajuste por número de páginas
+            if (pageCount === '3-5') basePrice += 200;
+            if (pageCount === '6-10') basePrice += 400;
+            if (pageCount === '10+') basePrice += 600;
             
-            let response = defaultResponses[Math.floor(Math.random() * defaultResponses.length)];
+            // Ajuste por prazo
+            if (deliveryTime === '7') basePrice += 100;
             
-            if (userData.userName) {
-                response = userData.userName + ", " + response.charAt(0).toLowerCase() + response.slice(1);
-            }
+            userData.budget = basePrice;
             
-            return response;
+            // Mostrar resultado
+            document.getElementById('budgetCalculator').classList.add('hidden');
+            addBotMessage(`<div class="budget-result">💰 Orçamento estimado: R$ ${basePrice}</div>`);
+            
+            setTimeout(() => {
+                document.getElementById('nameInput').classList.remove('hidden');
+            }, 1000);
         }
 
-        function showMenu() {
-            addBotMessage(`Claro 😊 Escolha uma opção:<br><br>
-                <div class="menu-options">
-                    <div class="menu-option" onclick="handleMenuSelection('site')">
-                        <i class="fas fa-globe"></i>
-                        <div>Criar Site</div>
-                    </div>
-                    <div class="menu-option" onclick="handleMenuSelection('chatbot')">
-                        <i class="fas fa-robot"></i>
-                        <div>Chatbot IA</div>
-                    </div>
-                    <div class="menu-option" onclick="handleMenuSelection('whatsapp')">
-                        <i class="fab fa-whatsapp"></i>
-                        <div>Automação</div>
-                    </div>
-                    <div class="menu-option" onclick="handleMenuSelection('orçamento')">
-                        <i class="fas fa-file-invoice-dollar"></i>
-                        <div>Orçamento</div>
-                    </div>
-                    <div class="menu-option" onclick="handleMenuSelection('humano')">
-                        <i class="fas fa-user"></i>
-                        <div>Atendente</div>
-                    </div>
-                    <div class="menu-option" onclick="handleMenuSelection('email')">
-                        <i class="fas fa-envelope"></i>
-                        <div>E-mail</div>
-                    </div>
-                </div>`);
-        }
-
-        function handleMenuSelection(option) {
-            const responses = {
-                'site': "🎯 Perfeito! Vamos criar um site incrível para seu negócio. Posso te explicar como funciona?",
-                'chatbot': "🤖 Excelente! Chatbots aumentam vendas e reduzem custos. Posso te mostrar exemplos?",
-                'whatsapp': "📲 Ótima escolha! Automatize seu WhatsApp e atenda clientes 24h. Posso explicar?",
-                'orçamento': "💰 Vamos fazer um orçamento personalizado! Preencha o formulário abaixo:",
-                'humano': "👤 Certo! Conectando você com nossa equipe...",
-                'email': "📧 Vamos enviar um e-mail com todas as informações! Preencha o formulário:"
+        function sendDataToEmailJS() {
+            // ENVIO REAL PARA EMAILJS
+            emailjs.send('service_ls0f8en', 'template_px6e4wp', {
+                name: userData.name,
+                phone: userData.phone,
+            // ENVIO REAL PARA EMAILJS - PARA O CLIENTE
+            const clientTemplateParams = {
+                to_name: userData.name,
+                to_email: userData.email,
+                plan: userData.selectedPackage.name + ' ' + (userData.budget ? `(Orçamento: R$ ${userData.budget})` : userData.selectedPackage.price),
+                business: userData.business,
+                plan: userData.selectedPackage.name + ' ' + userData.selectedPackage.price,
+                date: new Date().toLocaleString('pt-BR'),
+                message: `Olá ${userData.name}, recebemos seu interesse no ${userData.selectedPackage.name}. Em breve o Samuel entrará em contato para discutir os detalhes.`
             };
             
-            addBotMessage(responses[option] || "Ótima escolha! Como posso ajudar?");
-            
-            if (option === 'email' || option === 'orçamento') {
-                setTimeout(() => {
-                    showEmailForm();
-                }, 800);
-            }
-            
-            if (option === 'humano') {
-                setTimeout(() => {
-                    showWhatsAppOption();
-                }, 800);
-            }
-        }
-
-        function showWhatsAppOption() {
-            addBotMessage(`👤 <strong>Para falar com atendente humano:</strong><br><br>
-                <a href="https://wa.me/5511913031275?text=Olá Samuel Tech IA! Gostaria de falar com um atendente." 
-                   class="whatsapp-btn" target="_blank">
-                    <i class="fab fa-whatsapp"></i>
-                    Falar no WhatsApp Agora
-                </a><br><br>
-                <small>Horário: Segunda a Sexta, 9h às 18h</small>`);
-        }
-
-        function showEmailForm() {
-            document.getElementById('normalChat').classList.add('hidden');
-            document.getElementById('emailFormContainer').classList.remove('hidden');
-            document.getElementById('emailSuccess').classList.add('hidden');
-            
-            if (userData.userName) {
-                document.getElementById('emailName').value = userData.userName;
-            }
-            
-            setTimeout(() => {
-                document.getElementById('emailName').focus();
-            }, 300);
-        }
-
-        function hideEmailForm() {
-            document.getElementById('emailFormContainer').classList.add('hidden');
-            document.getElementById('normalChat').classList.remove('hidden');
-            document.getElementById('emailSuccess').classList.add('hidden');
-            
-            setTimeout(() => {
-                document.getElementById('chatInput').focus();
-            }, 300);
-        }
-
-        function selectService(element, service) {
-            document.querySelectorAll('.service-option').forEach(opt => {
-                opt.classList.remove('selected');
-            });
-            
-            element.classList.add('selected');
-            document.getElementById('selectedService').value = service;
-            document.getElementById('serviceError').style.display = 'none';
-        }
-
-        // ==============================================
-        // 🔧 FUNÇÃO PRINCIPAL DE ENVIO DE EMAIL
-        // ==============================================
-        async function sendEmail(event) {
-            event.preventDefault();
-
-            // Coletar dados
-            const name = document.getElementById('emailName').value.trim();
-            const email = document.getElementById('emailEmail').value.trim();
-            const phone = document.getElementById('emailPhone').value.trim();
-            const business = document.getElementById('emailBusiness').value;
-            const service = document.getElementById('selectedService').value;
-            const message = document.getElementById('emailMessage').value.trim();
-            
-            // Validação
-            let isValid = true;
-            
-            if (!name) {
-                showNotification("Por favor, digite seu nome!");
-                isValid = false;
-            }
-            
-            if (!email || !validateEmail(email)) {
-                showNotification("Por favor, insira um e-mail válido!");
-                isValid = false;
-            }
-            
-            if (!phone) {
-                showNotification("Por favor, digite seu WhatsApp!");
-                isValid = false;
-            }
-            
-            if (!business) {
-                showNotification("Por favor, selecione o tipo de negócio!");
-                isValid = false;
-            }
-            
-            if (!service) {
-                document.getElementById('serviceError').style.display = 'block';
-                showNotification("Por favor, selecione um serviço!");
-                isValid = false;
-            }
-            
-            if (!isValid) return;
-            
-            // Mostrar loading
-            const button = event.target;
-            const originalText = button.innerHTML;
-            button.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Enviando...';
-            button.disabled = true;
-            
-            // Data atual formatada
-            const now = new Date();
-            const dateFormatted = now.toLocaleDateString('pt-BR');
-            const timeFormatted = now.toLocaleTimeString('pt-BR');
-            
-            // Mapear tipo de negócio
-            const businessTypes = {
-                'pizzaria': 'Pizzaria/Lanchonete',
-                'pet': 'Pet Shop',
-                'salon': 'Salão/Barberia',
-                'clinic': 'Clínica/Consultório',
-                'store': 'Loja/E-commerce',
-                'digital': 'Serviços Digitais',
-                'other': 'Outro'
+            // ENVIO REAL PARA EMAILJS - PARA O SAMUEL
+            const samuelTemplateParams = {
+                to_name: 'Samuel',
+                to_email: 'samueldesignerpromax@gmail.com',
+                client_name: userData.name,
+                client_email: userData.email,
+                client_phone: userData.phone,
+                client_business: userData.business,
+                plan: userData.selectedPackage.name + ' ' + (userData.budget ? `(Orçamento: R$ ${userData.budget})` : userData.selectedPackage.price),
+                colors: userData.colors,
+                date: new Date().toLocaleString('pt-BR')
+            }, 'L-FG9qXTpKftUl3kR')
+                date: new Date().toLocaleString('pt-BR'),
+                message: `Novo lead: ${userData.name} interessado no ${userData.selectedPackage.name}. Contato: ${userData.phone} | ${userData.email}`
             };
             
-            const businessName = businessTypes[business] || business;
-            
-            try {
-                console.log("📧 Iniciando envio de e-mails...");
-                
-                // 1. Enviar e-mail para o CLIENTE (confirmação)
-                const clientEmailParams = {
-                    to_name: name,
-                    to_email: email,
-                    from_name: EMAILJS_CONFIG.COMPANY_NAME,
-                    service_name: service,
-                    business_type: businessName,
-                    client_message: message || "Sem mensagem adicional",
-                    date: dateFormatted,
-                    phone: phone,
-                    company_email: EMAILJS_CONFIG.COMPANY_EMAIL,
-                    reply_to: EMAILJS_CONFIG.COMPANY_EMAIL
-                };
-                
-                console.log("📤 Enviando para cliente:", clientEmailParams);
-                
-                const clientResponse = await emailjs.send(
-                    EMAILJS_CONFIG.SERVICE_ID,
-                    EMAILJS_CONFIG.TEMPLATE_ID_CLIENT,
-                    clientEmailParams
-                );
-                
-                console.log("✅ E-mail para cliente enviado! Status:", clientResponse.status);
-                
-                // 2. Enviar notificação para SAMUEL
-                const adminEmailParams = {
-                    to_name: "Samuel Tech IA",
-                    to_email: EMAILJS_CONFIG.COMPANY_EMAIL,
-                    client_name: name,
-                    client_email: email,
-                    client_phone: phone,
-                    client_business: businessName,
-                    client_service: service,
-                    client_message: message || "Sem mensagem adicional",
-                    date: dateFormatted,
-                    time: timeFormatted,
-                    subject: `🚀 NOVA SOLICITAÇÃO: ${name} - ${service}`,
-                    company_name: EMAILJS_CONFIG.COMPANY_NAME
-                };
-                
-                console.log("📤 Enviando para Samuel:", adminEmailParams);
-                
-                const adminResponse = await emailjs.send(
-                    EMAILJS_CONFIG.SERVICE_ID,
-                    EMAILJS_CONFIG.TEMPLATE_ID_ADMIN,
-                    adminEmailParams
-                );
-                
-                console.log("✅ Notificação para Samuel enviada! Status:", adminResponse.status);
-                
-                // Mostrar mensagem de sucesso
-                document.getElementById('emailFormContainer').classList.add('hidden');
-                document.getElementById('emailSuccess').classList.remove('hidden');
-                showNotification("✅ E-mails enviados com sucesso!");
-                
-                // Log de sucesso
-                console.log("🎉 TODOS OS E-MAILS ENVIADOS COM SUCESSO!");
-                console.log("========================================");
-                console.log("📋 RESUMO DA SOLICITAÇÃO:");
-                console.log("👤 Cliente:", name);
-                console.log("📧 E-mail:", email);
-                console.log("📱 WhatsApp:", phone);
-                console.log("🏢 Negócio:", businessName);
-                console.log("💼 Serviço:", service);
-                console.log("📝 Mensagem:", message || "Nenhuma");
-                console.log("⏰ Data/Hora:", `${dateFormatted} ${timeFormatted}`);
-                console.log("========================================");
-                
-            } catch (error) {
-                console.error("❌ ERRO AO ENVIAR E-MAIL:", error);
-                
-                // Detectar tipo de erro
-                let errorMessage = "Erro ao enviar e-mail. ";
-                
-                if (error.status === 0) {
-                    errorMessage += "Sem conexão com a internet.";
-                } else if (error.text) {
-                    errorMessage += `Erro: ${error.text}`;
-                } else if (error.message) {
-                    errorMessage += error.message;
-                }
-                
-                showNotification(errorMessage);
-                
-                // FALLBACK: Abrir cliente de e-mail padrão
-                console.log("🔄 Acionando fallback (mailto)...");
-                
-                const subject = `🚀 SOLICITAÇÃO: ${service} - ${name}`;
-                const body = `NOVA SOLICITAÇÃO VIA CHATBOT SAMUEL TECH IA
-======================================
-👤 NOME: ${name}
-📧 E-MAIL: ${email}
-📱 WHATSAPP: ${phone}
-🏢 TIPO DE NEGÓCIO: ${businessName}
-💼 SERVIÇO DE INTERESSE: ${service}
-📝 MENSAGEM: ${message || "Sem mensagem adicional"}
-⏰ DATA/HORA: ${dateFormatted} ${timeFormatted}
-======================================
-Enviado via Chatbot Samuel Tech IA
-
-Para responder, basta clicar em Responder ou entrar em contato:
-📧 E-mail: ${EMAILJS_CONFIG.COMPANY_EMAIL}
-📱 WhatsApp: (11) 91303-1275
-🌐 Samuel Tech IA`;
-
-                const mailtoLink = `mailto:${EMAILJS_CONFIG.COMPANY_EMAIL}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}&cc=${email}`;
-                
-                // Abrir cliente de e-mail em nova aba
-                window.open(mailtoLink, '_blank');
-                
-                // Mostrar mensagem alternativa
-                setTimeout(() => {
-                    document.getElementById('emailFormContainer').classList.add('hidden');
-                    document.getElementById('emailSuccess').classList.remove('hidden');
-                    
-                    const successDiv = document.getElementById('emailSuccess');
-                    successDiv.innerHTML = `
-                        <i class="fas fa-envelope-open-text" style="font-size: 1.5em; margin-bottom: 10px; color: #17a2b8;"></i>
-                        <h4 style="margin-bottom: 8px;">📧 Cliente de E-mail Aberto</h4>
-                        <p style="font-size: 0.9em;">Seu cliente de e-mail foi aberto automaticamente!</p>
-                        <p style="font-size: 0.9em;"><strong>1.</strong> Verifique os dados preenchidos<br>
-                        <strong>2.</strong> Clique em <strong>"Enviar"</strong> para finalizar</p>
-                        <div style="background: #f8f9fa; padding: 12px; border-radius: 8px; margin: 15px 0; font-size: 0.85em; border-left: 3px solid #00dbde;">
-                            <strong>📨 Destinatário:</strong> ${EMAILJS_CONFIG.COMPANY_EMAIL}<br>
-                            <strong>📋 Assunto:</strong> ${subject.substring(0, 60)}...
-                        </div>
-                        <button onclick="resetChat()" style="width: 100%; margin-top: 10px; background: var(--ai-gradient);">
-                            <i class="fas fa-comments"></i> Voltar ao Chat
-                        </button>
-                    `;
-                    
-                    showNotification("📧 Complete o envio no seu cliente de e-mail.");
-                }, 500);
-                
-            } finally {
-                // Restaurar botão
-                button.innerHTML = originalText;
-                button.disabled = false;
-            }
-        }
-
-        function resetChat() {
-            document.getElementById('emailSuccess').classList.add('hidden');
-            document.getElementById('normalChat').classList.remove('hidden');
-            
-            // Limpar formulário
-            document.getElementById('emailName').value = '';
-            document.getElementById('emailEmail').value = '';
-            document.getElementById('emailPhone').value = '';
-            document.getElementById('emailBusiness').value = '';
-            document.getElementById('emailMessage').value = '';
-            document.getElementById('selectedService').value = '';
-            document.getElementById('serviceError').style.display = 'none';
-            
-            document.querySelectorAll('.service-option').forEach(opt => {
-                opt.classList.remove('selected');
+            // Enviar e-mail para o cliente
+            emailjs.send('service_ls0f8en', 'template_client_confirmation', clientTemplateParams, 'L-FG9qXTpKftUl3kR')
+            .then(function(response) {
+                console.log('Email enviado com sucesso!', response);
+                showFinalMessage();
+                console.log('E-mail para cliente enviado com sucesso!', response);
+            }, function(error) {
+                console.log('Falha no envio do e-mail para cliente:', error);
             });
             
-            addBotMessage("🔄 Pronto! Como posso te ajudar agora?");
+            // Enviar e-mail para o Samuel
+            emailjs.send('service_ls0f8en', 'template_px6e4wp', samuelTemplateParams, 'L-FG9qXTpKftUl3kR')
+            .then(function(response) {
+                console.log('E-mail para Samuel enviado com sucesso!', response);
+                // Enviar dados para Google Sheets via Webhook
+                sendToGoogleSheets();
+            }, function(error) {
+                console.log('Falha no envio do email:', error);
+                console.log('Falha no envio do e-mail para Samuel:', error);
+                // Mesmo se o email falhar, mostra a mensagem final
+                showFinalMessage();
+            });
+        }
+        
+        function sendToGoogleSheets() {
+            // Webhook para Google Sheets (substitua pela sua URL)
+            const webhookURL = 'https://script.google.com/macros/s/SEU_SCRIPT_ID/exec';
             
-            setTimeout(() => {
-                document.getElementById('chatInput').focus();
-            }, 300);
+            const sheetData = {
+                name: userData.name,
+                email: userData.email,
+                phone: userData.phone,
+                business: userData.business,
+                plan: userData.selectedPackage.name,
+                budget: userData.budget || userData.selectedPackage.price,
+                colors: userData.colors,
+                date: new Date().toLocaleDateString('pt-BR'),
+                timestamp: new Date().toISOString()
+            };
+            
+            fetch(webhookURL, {
+                method: 'POST',
+                mode: 'no-cors',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(sheetData)
+            })
+            .then(() => {
+                console.log('Dados enviados para Google Sheets');
+                showFinalMessage();
+            })
+            .catch(error => {
+                console.log('Erro ao enviar para Google Sheets:', error);
+                showFinalMessage();
+            });
         }
 
-        // ==============================================
-        // FUNÇÕES AUXILIARES
-        // ==============================================
+        function showFinalMessage() {
+            document.getElementById('finalMessage').classList.remove('hidden');
 
+            // Configurar link do WhatsApp com SEU NÚMERO REAL
+            const whatsappLink = document.getElementById('whatsappLink');
+            const message = `Olá Samuel! Me chamo ${userData.name} e tenho interesse no ${userData.selectedPackage.name} ${userData.selectedPackage.price}. Meu negócio: ${userData.business}${userData.colors ? '. Preferências: ' + userData.colors : ''}`;
+            const message = `Olá Samuel! Me chamo ${userData.name} e tenho interesse no ${userData.selectedPackage.name} ${userData.budget ? `(Orçamento: R$ ${userData.budget})` : userData.selectedPackage.price}. Meu negócio: ${userData.business}${userData.colors ? '. Preferências: ' + userData.colors : ''}`;
+
+            // SEU NÚMERO AQUI: (11) 91303-1275
+            whatsappLink.href = `https://wa.me/5511913031275?text=${encodeURIComponent(message)}`;
+@@ -490,25 +713,32 @@
+                lastMessage.querySelector('.message-content').innerHTML = '✅ Dados enviados com sucesso! O Samuel já recebeu suas informações.';
+            }
+
+            addBotMessage(`🎉 <strong>Perfeito ${userData.name}!</strong><br><br>Seus dados foram enviados para o Samuel! Ele entrará em contato no WhatsApp em até 5 minutos.`);
+            addBotMessage(`🎉 <strong>Perfeito ${userData.name}!</strong><br><br>Seus dados foram enviados para o Samuel! Ele entrará em contato no WhatsApp em até 5 minutos.<br><br>📧 <strong>Você também receberá um e-mail de confirmação em instantes!</strong>`);
+        }
+
+        function restartChat() {
+            userData = {
+                name: '',
+                email: '',
+                phone: '',
+                business: '',
+                colors: '',
+                selectedPackage: ''
+                selectedPackage: '',
+                budget: null
+            };
+
+            document.getElementById('userName').value = '';
+            document.getElementById('userEmail').value = '';
+            document.getElementById('userPhone').value = '';
+            document.getElementById('userBusiness').value = '';
+            document.getElementById('userColors').value = '';
+            document.getElementById('projectType').value = 'portfolio';
+            document.getElementById('pageCount').value = '1';
+            document.getElementById('deliveryTime').value = '7';
+
+            document.getElementById('initialOptions').classList.remove('hidden');
+            document.getElementById('finalMessage').classList.add('hidden');
+            document.getElementById('budgetCalculator').classList.add('hidden');
+
+            const messagesContainer = document.getElementById('chatbotMessages');
+            while (messagesContainer.children.length > 1) {
+@@ -535,23 +765,41 @@
+            messagesContainer.appendChild(messageDiv);
+            messagesContainer.scrollTop = messagesContainer.scrollHeight;
+        }
+        
+        function showError(message) {
+            const messagesContainer = document.getElementById('chatbotMessages');
+            const errorDiv = document.createElement('div');
+            errorDiv.className = 'message bot';
+            errorDiv.innerHTML = `<div class="message-content error-message">${message}</div>`;
+            messagesContainer.appendChild(errorDiv);
+            messagesContainer.scrollTop = messagesContainer.scrollHeight;
+        }
+        
         function validateEmail(email) {
             const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
             return re.test(email);
         }
 
-        function showNotification(text) {
-            const notification = document.getElementById('notification');
-            const notificationText = document.getElementById('notificationText');
-            
-            notificationText.innerHTML = `<strong>${text}</strong>`;
-            notification.classList.add('show');
-            
-            setTimeout(() => {
-                notification.classList.remove('show');
-            }, 4000);
-        }
+        // Event listeners para Enter
+        document.getElementById('userName').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') saveName();
+        });
 
-        function showLoading(show) {
-            const loadingOverlay = document.getElementById('loadingOverlay');
-            loadingOverlay.style.display = show ? 'flex' : 'none';
-        }
+        document.getElementById('userEmail').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') saveEmail();
+        });
 
-        function showTypingIndicator() {
-            const messagesContainer = document.getElementById('chatbotMessages');
-            const typingDiv = document.createElement('div');
-            typingDiv.className = 'message bot';
-            typingDiv.id = 'typingIndicator';
-            
-            typingDiv.innerHTML = `
-                <div class="message-content typing-indicator">
-                    <div class="typing-dot"></div>
-                    <div class="typing-dot"></div>
-                    <div class="typing-dot"></div>
-                    <span style="margin-left: 10px; font-size: 0.9em; color: #00dbde;">IA digitando...</span>
-                </div>
-            `;
-            
-            messagesContainer.appendChild(typingDiv);
-            messagesContainer.scrollTop = messagesContainer.scrollHeight;
-        }
+        document.getElementById('userPhone').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') savePhone();
+        });
 
-        function removeTypingIndicator() {
-            const typingIndicator = document.getElementById('typingIndicator');
-            if (typingIndicator) {
-                typingIndicator.remove();
-            }
-        }
+        document.getElementById('userBusiness').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') saveBusiness();
+        });
 
-        function addBotMessage(text) {
-            const messagesContainer = document.getElementById('chatbotMessages');
-            const messageDiv = document.createElement('div');
-            messageDiv.className = 'message bot';
-            
-            const now = new Date();
-            const timeString = now.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
-            
-            messageDiv.innerHTML = `
-                <div class="message-content">${text}</div>
-                <div class="timestamp">${timeString}</div>
-            `;
-            
-            messagesContainer.appendChild(messageDiv);
-            messagesContainer.scrollTop = messagesContainer.scrollHeight;
-        }
-
-        function addUserMessage(text) {
-            const messagesContainer = document.getElementById('chatbotMessages');
-            const messageDiv = document.createElement('div');
-            messageDiv.className = 'message user';
-            
-            const now = new Date();
-            const timeString = now.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
-            
-            messageDiv.innerHTML = `
-                <div class="message-content">${text}</div>
-                <div class="timestamp">${timeString}</div>
-            `;
-            
-            messagesContainer.appendChild(messageDiv);
-            messagesContainer.scrollTop = messagesContainer.scrollHeight;
-        }
-
-        function askQuickQuestion(question) {
-            document.getElementById('chatInput').value = question;
-            sendMessage();
-        }
-
-        // ==============================================
-        // INICIALIZAÇÃO
-        // ==============================================
-        document.addEventListener('DOMContentLoaded', function() {
-            console.log("🚀 Samuel Tech IA Chatbot carregado!");
-            console.log("📧 Configuração EmailJS:", EMAILJS_CONFIG);
-            
-            // Testar conexão com EmailJS
-            setTimeout(() => {
-                console.log("🔗 Testando conexão com EmailJS...");
-                showNotification("🤖 Samuel Tech IA está online! Pronta para ajudar.");
-            }, 1000);
-            
-            // Configurar timestamp inicial
-            document.getElementById('initialTimestamp').textContent = 
-                new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
-            
-            // Configurar textarea do chat
-            const chatInput = document.getElementById('chatInput');
-            if (chatInput) {
-                chatInput.addEventListener('input', function() {
-                    this.style.height = 'auto';
-                    this.style.height = (this.scrollHeight) + 'px';
-                });
-                
-                chatInput.addEventListener('keypress', function(e) {
-                    if (e.key === 'Enter' && !e.shiftKey) {
-                        e.preventDefault();
-                        sendMessage();
-                    }
-                });
-            }
-            
-            // Configurar input de nome
-            const userNameInput = document.getElementById('userNameInput');
-            if (userNameInput) {
-                userNameInput.addEventListener('keypress', function(e) {
-                    if (e.key === 'Enter') {
-                        e.preventDefault();
-                        saveUserName();
-                    }
-                });
-                
-                userNameInput.focus();
-            }
+        document.getElementById('userColors').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') saveColors();
         });
     </script>
 </body>
-</html>
